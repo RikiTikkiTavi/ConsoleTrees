@@ -61,7 +61,7 @@ void add_nodes_to_array(tree t, int arr[], int i) {
     add_nodes_to_array(t->right, arr, 2i + 2);
 }
 
-int *tree_to_array(tree t, int* arr_length) {
+int *tree_to_array(tree t, int *arr_length) {
     *arr_length = 0;
     count_vertices(t, arr_length);
     int *arr = (int *) malloc(sizeof(int) * (*arr_length));
@@ -74,18 +74,37 @@ int *tree_to_array(tree t, int* arr_length) {
 }
 
 char *build_margin(int margin) {
-    char margin_string[] = "";
+    char *margin_string = (char *) malloc(sizeof(char) * margin + 1);
+    if (margin_string == NULL) {
+        printf("\n[l:79] Memory allocation for margin failed\n");
+        return margin_string;
+    }
+    margin_string[margin] = '\0';
     for (int i = 0; i < margin; i++) {
-        strcat(margin_string, MARGIN_UNIT);
+        margin_string[i] = ' ';
     }
     return margin_string;
 }
 
-void visualize_tree(int arr[]) {
-
+void visualize_tree(int arr[], int arr_length) {
+    int i = 0;
+    while (i < arr_length) {
+        if (i == 0) {
+            printf("%d", arr[i]);
+            i++;
+        } else {
+            int i_end = 2*i;
+            while((i <= i_end) && (i<arr_length)) {
+                printf("%d ", arr[i]);
+                i++;
+            }
+        }
+        printf("\n");
+    }
 }
 
 int main() {
-    printf("Hello, World!\n");
+    int arr[14] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+    visualize_tree(arr, 14);
     return 0;
 }
