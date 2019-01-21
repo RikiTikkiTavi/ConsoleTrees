@@ -90,12 +90,14 @@ void visualize_tree(int arr[], int arr_length) {
     int i = 0;
     while (i < arr_length) {
         if (i == 0) {
+            printf("%s", build_margin(arr_length));
             printf("%d", arr[i]);
             i++;
         } else {
             int i_end = 2*i;
+            printf("%s", build_margin(arr_length-i_end));
             while((i <= i_end) && (i<arr_length)) {
-                printf("%d ", arr[i]);
+                printf("%d%s", arr[i], build_margin(3));
                 i++;
             }
         }
