@@ -11,15 +11,13 @@ typedef struct node {
 
 typedef struct list_el *list;
 typedef struct list_el {
-    int value;
-    int isEmpty;
+    tree t_node;
     list next;
-    list prev;
 } list_el;
 
 typedef struct layers {
-    list current;
-    list next;
+    list currentLayer;
+    list nextLayer;
 } layers;
 
 const int INITIAL_MARGIN = 10;
@@ -35,14 +33,13 @@ tree create_node(int value) {
     return t;
 }
 
-list create_list_el(int value, int isEmpty) {
+list create_list_el(tree t_node) {
     list l = (list) malloc(sizeof(list_el));
     if (l == NULL) {
         printf("\n[l:36] Memory allocation for list failed\n");
         return l;
     }
-    l->value = value;
-    l->isEmpty = isEmpty;
+    l->t_node = t_node;
     return l;
 }
 
@@ -55,6 +52,7 @@ void deleteTree(tree t) {
     deleteTree(t->right);
 }
 
+// ERROR HERE
 void deleteList(list l) {
     list next;
 
@@ -156,17 +154,19 @@ int calc_tree_height(tree t) {
     }
 }
 
-void append_empty_childs(layers *c_layers){
-    if(c_layers->next == NULL) {
-        c_layers->next = create_list_el(0, 1);
-        c_layers->next->next = create_list_el(0, 1);
+void append_childs(layers *c_layers, list left, list right){
+    if(c_layers->nextLayer == NULL) {
+        c_layers->nextLayer = left;
+        c_layers->nextLayer->next = right;
     } else {
-        c_layers->next->next = create_list_el(0, 1);
-        c_layers->next->next = create_list_el(0, 1);
+        list lastInNextLayer = c_layers->nextLayer;
+        while(lastInNextLayer->next!=NULL){
+            lastInNextLayer = lastInNextLayer->next;
+        }
+        lastInNextLayer->next = left;
+        lastInNextLayer->next->next = right;
     }
 }
-
-void append_childs(layers *c_layers, )
 
 
 void visualize_tree(tree t) {
@@ -186,35 +186,44 @@ void visualize_tree(tree t) {
     int m_o = 2 * m_i;
 
     // Init list with root
-    list layer_list_first = create_list_el(t->value, 0);
+    list layer_list_first = create_list_el(t);
 
     // Init layers
-    layers c_layer;
-    c_layer.current = layer_list_first;
+    // HERE MEMORY LEAK
+    layers c_layer = *((layers*) malloc(sizeof(layers)));
+    c_layer.currentLayer = layer_list_first;
 
+    int have_real_node = 1;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-    while(1){
-        list l_c = layer_list_first;
+    while(have_real_node){
+        list l_c = c_layer.currentLayer;
+        have_real_node = 0;
         while(l_c != NULL) {
-            if(l_c->isEmpty){
+            if(l_c->t_node == NULL){
                 printf(" e ");
-                append_empty_childs(&c_layer);
+                append_childs(&c_layer, create_list_el(NULL), create_list_el(NULL));
                 l_c = l_c -> next;
             } else {
-                printf(" %d ", l_c -> value);
+                printf(" %d ", l_c -> t_node -> value);
+                append_childs(&c_layer, create_list_el(l_c -> t_node -> left), create_list_el(l_c -> t_node -> right));
                 l_c = l_c -> next;
+                have_real_node = 1;
             }
         }
+        // Free currentLayer
+        deleteList(c_layer.currentLayer);
+        // Set nextLayer as currentLayer
+        c_layer.currentLayer = c_layer.nextLayer;
+        c_layer.nextLayer = NULL;
     }
-#pragma clang diagnostic pop
-
+    deleteList(c_layer.currentLayer);
+    c_layer.currentLayer = NULL;
+    //free(&c_layer);
 }
 
 int main() {
-    int arr[7] = {1, 2, 3, 4, 5, 6, 7};
-    tree root = array_to_tree(arr, 7);
+    int arr[3] = {1, 2, 3};
+    tree root = array_to_tree(arr, 3);
     visualize_tree(root);
     deleteTree(root);
     return 0;
