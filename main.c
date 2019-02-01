@@ -20,6 +20,12 @@ typedef struct layers {
     list nextLayer;
 } layers;
 
+typedef enum layer_types {
+    vertex,
+    edge_horizontal,
+    edge_vertical
+} layer_types;
+
 const int INITIAL_MARGIN = 10;
 char MARGIN_UNIT[] = " ";
 
@@ -56,7 +62,7 @@ void deleteTree(tree t) {
 void deleteList(list l) {
     list next;
 
-    while (l!=NULL) {
+    while (l != NULL) {
         next = l->next;
         free(l);
         l = next;
@@ -154,13 +160,14 @@ int calc_tree_height(tree t) {
     }
 }
 
-void append_childs(layers *c_layers, list left, list right){
-    if(c_layers->nextLayer == NULL) {
+void append_childs(layers *c_layers, list left, list right) {
+    if (c_layers->nextLayer == NULL) {
         c_layers->nextLayer = left;
         c_layers->nextLayer->next = right;
     } else {
+        // TODO: DEBUG AND FIX ERROR HERE
         list lastInNextLayer = c_layers->nextLayer;
-        while(lastInNextLayer->next!=NULL){
+        while (lastInNextLayer->next != NULL) {
             lastInNextLayer = lastInNextLayer->next;
         }
         lastInNextLayer->next = left;
@@ -168,9 +175,38 @@ void append_childs(layers *c_layers, list left, list right){
     }
 }
 
+void print_layer(layers *c_layer, layer_types layer_type, int m_o, int m_i, int m_v, int layer_length) {
+    if (layer_type == vertex) {
+        char *m_i_string = build_margin(2*m_i);
+        char *m_o_string = build_margin(m_o);
+        char *m_v_string = build_margin(m_v);
+        list c_n = c_layer->currentLayer;
+        printf("m_i: %d;", m_i);
+        printf("%s", m_o_string);
+        for (int i = 1; i <= layer_length; i++) {
+            if (c_n->t_node != NULL)
+                printf("%d", c_n->t_node->value);
+            else {
+                printf(" ");
+            }
+            if (i * 2 == layer_length)
+                printf("%s", m_i_string);
+            else {
+                printf("%s", m_v_string);
+            }
+            c_n = c_n->next;
+        }
+        printf("\n");
+
+        free(m_i_string);
+        free(m_o_string);
+        free(m_v_string);
+    }
+}
+
 
 void visualize_tree(tree t) {
-    if(t==NULL){
+    if (t == NULL) {
         printf("\n Tree is empty! \n");
         return;
     }
@@ -184,46 +220,59 @@ void visualize_tree(tree t) {
     int max_h = calc_tree_height(t);
     int m_i = 3 * max_h;
     int m_o = 2 * m_i;
+    int m_v = 5;
 
     // Init list with root
     list layer_list_first = create_list_el(t);
 
     // Init layers
-    // HERE MEMORY LEAK
-    layers c_layer = *((layers*) malloc(sizeof(layers)));
+    layers c_layer;
     c_layer.currentLayer = layer_list_first;
+    c_layer.nextLayer = NULL;
 
+    int layer_length = 1;
     int have_real_node = 1;
 
-    while(have_real_node){
+    while (have_real_node) {
         list l_c = c_layer.currentLayer;
         have_real_node = 0;
-        while(l_c != NULL) {
-            if(l_c->t_node == NULL){
-                printf(" e ");
+
+        // Create next layer
+        while (l_c != NULL) {
+            if (l_c->t_node == NULL) {
+                // Emulated node
                 append_childs(&c_layer, create_list_el(NULL), create_list_el(NULL));
-                l_c = l_c -> next;
+                l_c = l_c->next;
             } else {
-                printf(" %d ", l_c -> t_node -> value);
-                append_childs(&c_layer, create_list_el(l_c -> t_node -> left), create_list_el(l_c -> t_node -> right));
-                l_c = l_c -> next;
+                // Real node
+                append_childs(&c_layer, create_list_el(l_c->t_node->left), create_list_el(l_c->t_node->right));
+                l_c = l_c->next;
                 have_real_node = 1;
             }
         }
+
+        // Print current layer
+        print_layer(&c_layer, vertex, m_o, m_i, m_v, layer_length);
+
+        // Count layer params
+        layer_length *= 2;
+        m_o -= 3;
+        m_i -= 3;
+
         // Free currentLayer
         deleteList(c_layer.currentLayer);
+
         // Set nextLayer as currentLayer
         c_layer.currentLayer = c_layer.nextLayer;
         c_layer.nextLayer = NULL;
     }
     deleteList(c_layer.currentLayer);
     c_layer.currentLayer = NULL;
-    //free(&c_layer);
 }
 
 int main() {
-    int arr[3] = {1, 2, 3};
-    tree root = array_to_tree(arr, 3);
+    int arr[5] = {1, 2, 3, 4, 5};
+    tree root = array_to_tree(arr, 5);
     visualize_tree(root);
     deleteTree(root);
     return 0;
