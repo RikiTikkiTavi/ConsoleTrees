@@ -26,9 +26,6 @@ typedef enum layer_types {
     edge_y
 } layer_types;
 
-const int INITIAL_MARGIN = 10;
-char MARGIN_UNIT[] = " ";
-
 tree create_node(int value) {
     tree t = (tree) malloc(sizeof(node));
     if (t == NULL) {
@@ -59,7 +56,6 @@ void deleteTree(tree t) {
     deleteTree(t->right);
 }
 
-// ERROR HERE
 void deleteList(list l) {
     list next;
 
@@ -90,10 +86,6 @@ tree array_to_tree(int arr[], int arr_length) {
     tree root = create_node(arr[0]);
     create_subtree(root, arr, 0, arr_length);
     return root;
-}
-
-void handle_array_add(int value, int arr[], int i) {
-
 }
 
 void count_vertices(tree t, int *i) {
@@ -282,8 +274,10 @@ void visualize_tree(tree t) {
 
 int main() {
     int arr[5] = {1, 2, 3, 4, 5};
+
     tree root = array_to_tree(arr, 5);
     visualize_tree(root);
     deleteTree(root);
+
     return 0;
 }
