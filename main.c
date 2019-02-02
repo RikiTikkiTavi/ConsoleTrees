@@ -22,8 +22,8 @@ typedef struct layers {
 
 typedef enum layer_types {
     vertex,
-    edge_horizontal,
-    edge_vertical
+    edge_x,
+    edge_y
 } layer_types;
 
 const int INITIAL_MARGIN = 10;
@@ -46,6 +46,7 @@ list create_list_el(tree t_node) {
         return l;
     }
     l->t_node = t_node;
+    l->next = NULL;
     return l;
 }
 
@@ -165,7 +166,6 @@ void append_childs(layers *c_layers, list left, list right) {
         c_layers->nextLayer = left;
         c_layers->nextLayer->next = right;
     } else {
-        // TODO: DEBUG AND FIX ERROR HERE
         list lastInNextLayer = c_layers->nextLayer;
         while (lastInNextLayer->next != NULL) {
             lastInNextLayer = lastInNextLayer->next;
@@ -175,32 +175,42 @@ void append_childs(layers *c_layers, list left, list right) {
     }
 }
 
-void print_layer(layers *c_layer, layer_types layer_type, int m_o, int m_i, int m_v, int layer_length) {
-    if (layer_type == vertex) {
-        char *m_i_string = build_margin(2*m_i);
-        char *m_o_string = build_margin(m_o);
-        char *m_v_string = build_margin(m_v);
-        list c_n = c_layer->currentLayer;
-        printf("m_i: %d;", m_i);
-        printf("%s", m_o_string);
-        for (int i = 1; i <= layer_length; i++) {
-            if (c_n->t_node != NULL)
-                printf("%d", c_n->t_node->value);
-            else {
-                printf(" ");
-            }
-            if (i * 2 == layer_length)
-                printf("%s", m_i_string);
-            else {
-                printf("%s", m_v_string);
-            }
-            c_n = c_n->next;
+void print_vertex_layer(layers *c_layer, int m_o, int m_i, int m_v, int layer_length) {
+    char *m_i_string = build_margin(2 * m_i);
+    char *m_o_string = build_margin(m_o);
+    char *m_v_string = build_margin(m_v);
+    list c_n = c_layer->currentLayer;
+    printf("m_i: %d;", m_i);
+    printf("%s", m_o_string);
+    for (int i = 1; i <= layer_length; i++) {
+        if (c_n->t_node != NULL)
+            printf("%d", c_n->t_node->value);
+        else {
+            printf(" ");
         }
-        printf("\n");
+        if (i * 2 == layer_length)
+            printf("%s", m_i_string);
+        else {
+            printf("%s", m_v_string);
+        }
+        c_n = c_n->next;
+    }
+    printf("\n");
 
-        free(m_i_string);
-        free(m_o_string);
-        free(m_v_string);
+    free(m_i_string);
+    free(m_o_string);
+    free(m_v_string);
+}
+
+void print_layer(layers *c_layer, layer_types layer_type, int m_o, int m_i, int m_v, int layer_length) {
+    switch (layer_type) {
+        case vertex:
+            print_vertex_layer(c_layer, m_o, m_i, m_v, layer_length);
+            break;
+        case edge_x:
+            break; // TODO;
+        case edge_y:
+            break; // TODO;
     }
 }
 
