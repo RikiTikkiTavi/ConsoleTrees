@@ -68,17 +68,13 @@ void deleteList(list l) {
 
 void create_subtree(tree t, int arr[], int i, int arr_length) {
     if (t == NULL) return;
-    int ileft = 2 * i + 1;
-    int iright = 2 * i + 2;
-    t->left = ileft < arr_length ? create_node(arr[ileft]) : NULL;
-    t->right = iright < arr_length ? create_node(arr[iright]) : NULL;
+    int i_left = 2 * i + 1;
+    int i_right = 2 * i + 2;
+    t->left = i_left < arr_length ? create_node(arr[i_left]) : NULL;
+    t->right = i_right < arr_length ? create_node(arr[i_right]) : NULL;
 
-    if (i + 1 < arr_length)
-        create_subtree(t->left, arr, i + 1, arr_length);
-    if (i + 2 < arr_length)
-        create_subtree(t->right, arr, i + 2, arr_length);
-    else
-        return;
+    create_subtree(t->left, arr, i_left, arr_length);
+    create_subtree(t->right, arr, i_right, arr_length);
 }
 
 tree array_to_tree(int arr[], int arr_length) {
@@ -117,7 +113,7 @@ int *tree_to_array(tree t, int *arr_length) {
 char *build_margin(int margin) {
     char *margin_string = (char *) malloc(sizeof(char) * margin + 1);
     if (margin_string == NULL) {
-        printf("\n[l:79] Memory allocation for margin failed\n");
+        printf("\n[l: %d] Memory allocation for margin failed\n", __LINE__);
         return margin_string;
     }
     margin_string[margin] = '\0';
@@ -254,13 +250,21 @@ void visualize_tree(tree t) {
         }
 
         // Print current layer
-        print_layer(&c_layer, vertex, m_o, m_i, m_v, layer_length);
+        print_layer
+                (
+                        &c_layer,
+                        vertex,
+                        layer == 0 ? m_o + m_i / 2 : m_o,
+                        m_i,
+                        m_v,
+                        layer_length
+                );
 
         // Count layer params
         layer_length *= 2;
         m_o -= 3;
         m_i -= 3;
-
+        layer += 1;
         // Free currentLayer
         deleteList(c_layer.currentLayer);
 
@@ -273,9 +277,9 @@ void visualize_tree(tree t) {
 }
 
 int main() {
-    int arr[5] = {1, 2, 3, 4, 5};
+    int arr[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 
-    tree root = array_to_tree(arr, 5);
+    tree root = array_to_tree(arr, 13);
     visualize_tree(root);
     deleteTree(root);
 
