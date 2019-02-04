@@ -20,11 +20,27 @@ typedef struct layers {
     list nextLayer;
 } layers;
 
-typedef enum layer_types {
-    vertex,
-    edge_x,
-    edge_y
-} layer_types;
+typedef struct layer_params {
+    int step_v;
+    int step_t;
+    int m_o;
+    int layer_i;
+    int n_vertex;
+} layer_params;
+
+typedef enum row_types {
+    VERTEX,
+    EDGE_X,
+    EDGE_Y
+} row_types;
+
+typedef struct layer_object *layer_ptr;
+typedef struct layer_object {
+    layer_params *params;
+    list vertices;
+    layer_ptr next;
+    layer_ptr prev;
+} layer_object;
 
 tree create_node(int value) {
     tree t = (tree) malloc(sizeof(node));
@@ -39,7 +55,7 @@ tree create_node(int value) {
 list create_list_el(tree t_node) {
     list l = (list) malloc(sizeof(list_el));
     if (l == NULL) {
-        printf("\n[l:36] Memory allocation for list failed\n");
+        printf("\nl: %d ::: Memory allocation for list failed\n", __LINE__);
         return l;
     }
     l->t_node = t_node;
@@ -149,12 +165,12 @@ int calc_tree_height(tree t) {
     }
 }
 
-void append_childs(layers *c_layers, list left, list right) {
-    if (c_layers->nextLayer == NULL) {
-        c_layers->nextLayer = left;
-        c_layers->nextLayer->next = right;
+void append_childs(layer_ptr c_layer, list left, list right) {
+    if (c_layer->next->vertices == NULL) {
+        c_layer->next->vertices = left;
+        c_layer->next->vertices->next = right;
     } else {
-        list lastInNextLayer = c_layers->nextLayer;
+        list lastInNextLayer = c_layer->next->vertices;
         while (lastInNextLayer->next != NULL) {
             lastInNextLayer = lastInNextLayer->next;
         }
@@ -190,18 +206,85 @@ void print_vertex_layer(layers *c_layer, int m_o, int m_i, int m_v, int layer_le
     free(m_v_string);
 }
 
-void print_layer(layers *c_layer, layer_types layer_type, int m_o, int m_i, int m_v, int layer_length) {
+void print_layer(layers *c_layer, row_types layer_type, int m_o, int m_i, int m_v, int layer_length) {
     switch (layer_type) {
-        case vertex:
+        case VERTEX:
             print_vertex_layer(c_layer, m_o, m_i, m_v, layer_length);
             break;
-        case edge_x:
+        case EDGE_X:
             break; // TODO;
-        case edge_y:
+        case EDGE_Y:
             break; // TODO;
     }
 }
 
+layer_params *create_params(int n_vertex, int layer_i) {
+
+    layer_params *params = malloc(sizeof(layer_params));
+    if (params == NULL) {
+        printf("\nl: %d ::: Memory allocation for params struct failed\n", __LINE__);
+        return NULL;
+    }
+    params->layer_i = layer_i;
+    params->n_vertex = n_vertex;
+
+    return params;
+}
+
+layer_ptr create_layer(list vertices, layer_params *params, layer_ptr prev) {
+    layer_ptr layer = malloc(sizeof(layer_object));
+    if (layer == NULL) {
+        printf("\nl: %d ::: Failed allocate memory for layer\n", __LINE__);
+        return NULL;
+    }
+    layer->params = params;
+    layer->vertices = vertices;
+    layer->next = NULL;
+    layer->prev = prev;
+    return layer;
+}
+
+void init_layers_params(layer_ptr last_layer) {
+}
+
+layer_ptr init_layers(tree t) {
+
+    layer_ptr layer_first = create_layer(create_list_el(t), create_params(1, 1), NULL);
+
+    int h_max = calc_tree_height(t);
+    int layer_i = 1;
+    layer_ptr c_layer = layer_first;
+
+    // Create layers list with basic params
+    for (; layer_i < h_max; layer_i++) {
+        // Init next layer
+        c_layer->next = create_layer
+                (
+                        NULL,
+                        create_params(c_layer->params->n_vertex * 2, c_layer->params->layer_i + 1),
+                        c_layer
+                );
+
+        list vertex = c_layer->vertices;
+
+        // Create next layer
+        while (vertex != NULL) {
+            if (vertex->t_node == NULL) {
+                // Emulated node
+                append_childs(c_layer, create_list_el(NULL), create_list_el(NULL));
+                vertex = vertex->next;
+            } else {
+                // Real node
+                append_childs(c_layer, create_list_el(vertex->t_node->left), create_list_el(vertex->t_node->right));
+                vertex = vertex->next;
+            }
+        }
+
+        c_layer = c_layer->next;
+    }
+
+    return c_layer;
+}
 
 void visualize_tree(tree t) {
     if (t == NULL) {
@@ -253,7 +336,7 @@ void visualize_tree(tree t) {
         print_layer
                 (
                         &c_layer,
-                        vertex,
+                        VERTEX,
                         layer == 0 ? m_o + m_i / 2 : m_o,
                         m_i,
                         m_v,
