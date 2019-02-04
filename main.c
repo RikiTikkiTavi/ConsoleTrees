@@ -23,7 +23,10 @@ typedef struct layers {
 typedef struct layer_params {
     int step_v;
     int step_t;
+    int step_val;
     int m_o;
+    int n_u; // Quantity of underlines
+    int m_u; // Margin of underlines
     int layer_i;
     int n_vertex;
 } layer_params;
@@ -139,6 +142,18 @@ char *build_margin(int margin) {
     return margin_string;
 }
 
+void print_margin(int margin) {
+    for (int i = 0; i < margin; i++) {
+        printf(" ");
+    }
+}
+
+void print_underlines(int n) {
+    for (int i = 0; i < n; i++) {
+        printf("_");
+    }
+}
+
 
 int prom(tree t) {
     tree ct = t;
@@ -179,42 +194,91 @@ void append_childs(layer_ptr c_layer, list left, list right) {
     }
 }
 
-void print_vertex_layer(layers *c_layer, int m_o, int m_i, int m_v, int layer_length) {
-    char *m_i_string = build_margin(2 * m_i);
-    char *m_o_string = build_margin(m_o);
-    char *m_v_string = build_margin(m_v);
-    list c_n = c_layer->currentLayer;
-    printf("m_i: %d;", m_i);
-    printf("%s", m_o_string);
-    for (int i = 1; i <= layer_length; i++) {
-        if (c_n->t_node != NULL)
-            printf("%d", c_n->t_node->value);
-        else {
-            printf(" ");
-        }
-        if (i * 2 == layer_length)
-            printf("%s", m_i_string);
-        else {
-            printf("%s", m_v_string);
-        }
-        c_n = c_n->next;
-    }
-    printf("\n");
+void print_vertex_row(list vertices, struct layer_params *params) {
 
-    free(m_i_string);
-    free(m_o_string);
-    free(m_v_string);
+    // Print outer margin
+    print_margin(params->m_o);
+
+    int i = 0;
+
+    // Print vertices values
+    for (list vertex = vertices; vertex != NULL; vertex = vertex->next) {
+
+        // Print vertex value
+        if (vertex->t_node != NULL) printf("%d", vertex->t_node->value);
+        else printf(" ");
+
+        // Print step between vertices or between trees
+        if (i) print_margin(params->step_t);
+        else print_margin(params->step_v);
+
+        i = !i;
+    }
 }
 
-void print_layer(layers *c_layer, row_types layer_type, int m_o, int m_i, int m_v, int layer_length) {
-    switch (layer_type) {
-        case VERTEX:
-            print_vertex_layer(c_layer, m_o, m_i, m_v, layer_length);
-            break;
-        case EDGE_X:
-            break; // TODO;
-        case EDGE_Y:
-            break; // TODO;
+void print_edge_x_row(list vertices, struct layer_params *params) {
+
+    // Print margin underlines
+    print_margin(params->m_u);
+
+    int isSecond = 0;
+
+    for (list vertex = vertices; vertex != NULL; vertex = vertex->next) {
+
+        if (vertex->t_node != NULL) {
+            if(isSecond){
+                printf(" \\");
+                print_underlines(params->n_u);
+            } else {
+                print_underlines(params->n_u);
+                printf("/");
+            }
+        }
+        if(isSecond) print_margin(params->step_t+2);
+
+        isSecond = !isSecond;
+
+    }
+
+
+}
+
+void print_edge_y_row(list vertices, struct layer_params *params) {
+
+    // Print outer margin
+    print_margin(params->m_o);
+
+    int i = 0;
+
+    // Print |
+    for (list vertex = vertices; vertex != NULL; vertex = vertex->next) {
+
+        // Print |
+        if (vertex->t_node != NULL) printf("|");
+        else printf(" ");
+
+        // Print step between vertices or between trees
+        if (i) print_margin(params->step_t);
+        else print_margin(params->step_v);
+
+        i = !i;
+    }
+}
+void print_layer(layer_ptr layer) {
+    if (layer->params->layer_i == 1) {
+        // Print only vertex row
+        printf("\n");
+        print_vertex_row(layer->vertices, layer->params);
+        printf("\n");
+
+    } else {
+        // Print all rows
+        print_edge_x_row(layer->vertices, layer->params);
+        printf("\n");
+        print_edge_y_row(layer->vertices, layer->params);
+        printf("\n");
+        print_vertex_row(layer->vertices, layer->params);
+        printf("\n");
     }
 }
 
@@ -244,7 +308,78 @@ layer_ptr create_layer(list vertices, layer_params *params, layer_ptr prev) {
     return layer;
 }
 
-void init_layers_params(layer_ptr last_layer) {
+void delete_layers_object(layer_ptr layer_first) {
+    layer_ptr layer_current = layer_first;
+    layer_ptr next_layer;
+    while (layer_current != NULL) {
+
+        // Delete vertices list
+        deleteList(layer_current->vertices);
+        layer_current->vertices = NULL;
+
+        // Delete params
+        free(layer_current->params);
+        layer_current->params = NULL;
+
+        // Delete layer
+        next_layer = layer_current->next;
+        free(layer_current);
+
+        layer_current = next_layer;
+    }
+}
+
+layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, int step_val, int n_u0) {
+
+    // Get last layer
+    layer_ptr last_layer = layer_first;
+    while (last_layer->next != NULL) {
+        last_layer = last_layer->next;
+    }
+
+    // Set params in last layer
+    last_layer->params->step_v = step_v0;
+    last_layer->params->step_t = step_T0;
+    last_layer->params->step_val = step_val;
+    last_layer->params->m_o = step_T0;
+    last_layer->params->n_u = n_u0;
+    last_layer->params->m_u = step_T0 + 1;
+
+    layer_ptr current_layer = last_layer->prev;
+
+    while (current_layer != NULL) {
+
+        // Iterate from back, so take i-1 params from next of the current layer
+
+        // i-1 params
+        int step_v_prev = current_layer->next->params->step_v;
+        int step_t_prev = current_layer->next->params->step_t;
+        int step_val_prev = current_layer->next->params->step_val;
+        int m_o_prev = current_layer->next->params->m_o;
+
+        // Step vertex
+        current_layer->params->step_v = step_v_prev + step_t_prev + 2 * step_val_prev - 1;
+
+        // Margin outer
+        current_layer->params->m_o = step_val_prev + step_v_prev / 2 + m_o_prev;
+
+        // Step trees
+        current_layer->params->step_t = current_layer->params->step_v;
+
+        // Number of underlines
+        current_layer->params->n_u = current_layer->params->step_v / 2 - 1;
+
+        // Margin of underlines
+        current_layer->params->m_u = current_layer->params->m_o + 1;
+
+        // Step value
+        current_layer->params->step_val = step_val_prev;
+
+        current_layer = current_layer->prev;
+    }
+
+    return last_layer;
+
 }
 
 layer_ptr init_layers(tree t) {
@@ -281,90 +416,35 @@ layer_ptr init_layers(tree t) {
         }
 
         c_layer = c_layer->next;
+        // c_layer is now last layer
     }
 
-    return c_layer;
+    return layer_first;
 }
 
-void visualize_tree(tree t) {
-    if (t == NULL) {
-        printf("\n Tree is empty! \n");
-        return;
+void visualize_tree(tree t, int step_v0, int step_T0, int step_val, int n_u0) {
+
+    // Init layers_object
+    layer_ptr layer_first = init_layers(t);
+    layer_ptr layer_last = init_layers_params(layer_first, step_v0, step_T0, step_val, n_u0);
+
+    layer_ptr layer_current = layer_first;
+
+    // Print each layer
+    for (; layer_current != NULL; layer_current = layer_current->next) {
+        print_layer(layer_current);
     }
-    /*
-     * 1) Calc max height: max_h
-     * 2) Calc inner margin: m_i = 3*max_h
-     * 3) Calc outer margin: m_o = 2*m_i
-     * 4) Visualize each row using linked list
-     * */
-    int layer = 0;
-    int max_h = calc_tree_height(t);
-    int m_i = 3 * max_h;
-    int m_o = 2 * m_i;
-    int m_v = 5;
 
-    // Init list with root
-    list layer_list_first = create_list_el(t);
-
-    // Init layers
-    layers c_layer;
-    c_layer.currentLayer = layer_list_first;
-    c_layer.nextLayer = NULL;
-
-    int layer_length = 1;
-    int have_real_node = 1;
-
-    while (have_real_node) {
-        list l_c = c_layer.currentLayer;
-        have_real_node = 0;
-
-        // Create next layer
-        while (l_c != NULL) {
-            if (l_c->t_node == NULL) {
-                // Emulated node
-                append_childs(&c_layer, create_list_el(NULL), create_list_el(NULL));
-                l_c = l_c->next;
-            } else {
-                // Real node
-                append_childs(&c_layer, create_list_el(l_c->t_node->left), create_list_el(l_c->t_node->right));
-                l_c = l_c->next;
-                have_real_node = 1;
-            }
-        }
-
-        // Print current layer
-        print_layer
-                (
-                        &c_layer,
-                        VERTEX,
-                        layer == 0 ? m_o + m_i / 2 : m_o,
-                        m_i,
-                        m_v,
-                        layer_length
-                );
-
-        // Count layer params
-        layer_length *= 2;
-        m_o -= 3;
-        m_i -= 3;
-        layer += 1;
-        // Free currentLayer
-        deleteList(c_layer.currentLayer);
-
-        // Set nextLayer as currentLayer
-        c_layer.currentLayer = c_layer.nextLayer;
-        c_layer.nextLayer = NULL;
-    }
-    deleteList(c_layer.currentLayer);
-    c_layer.currentLayer = NULL;
+    delete_layers_object(layer_first);
+    layer_first = NULL;
+    layer_last = NULL;
 }
 
 int main() {
-    int arr[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    int *arr = calloc(sizeof(int), 25);
 
-    tree root = array_to_tree(arr, 13);
-    visualize_tree(root);
+    tree root = array_to_tree(arr, 25);
+    visualize_tree(root, 5, 3, 1, 1);
     deleteTree(root);
-
     return 0;
 }
