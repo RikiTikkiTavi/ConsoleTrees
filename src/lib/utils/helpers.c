@@ -20,6 +20,15 @@ list create_list_el(tree t_node) {
         return l;
     }
     l->t_node = t_node;
+    if (t_node == NULL) {
+        l->params = create_vertex_params(1, 0, 0);
+    } else {
+        int v_s = calc_vertex_size(t_node->value);
+        int v_s_l = (v_s - 1) / 2;
+        int v_s_r = v_s - v_s_l - 1;
+        l->params = create_vertex_params(v_s, v_s_l, v_s_r);
+    }
+
     l->next = NULL;
     return l;
 }
@@ -38,10 +47,26 @@ void deleteList(list l) {
 
     while (l != NULL) {
         next = l->next;
+        free(l->params);
+        l->params=NULL;
         free(l);
         l = next;
     }
 }
+
+vertex_params *create_vertex_params(int v_s, int v_s_l, int v_s_r) {
+    vertex_params *params = malloc(sizeof(vertex_params));
+    if (params == NULL) {
+        printf("\nl: %d ::: Memory allocation for vertex params struct failed\n", __LINE__);
+        return NULL;
+    }
+    params->v_s = v_s;
+    params->v_s_l = v_s_l;
+    params->v_s_r = v_s_r;
+
+    return params;
+}
+
 
 void create_subtree(tree t, int arr[], int i, int arr_length) {
     if (t == NULL) return;
@@ -78,4 +103,14 @@ int *tree_to_array(tree t, int *arr_length) {
     };
     add_nodes_to_array(t, arr, 0);
     return arr;
+}
+
+int calc_vertex_size(int vertex) {
+    if(vertex==0) return 1;
+    int size = 0;
+    while(vertex!=0){
+        vertex/=10;
+        size++;
+    }
+    return size;
 }

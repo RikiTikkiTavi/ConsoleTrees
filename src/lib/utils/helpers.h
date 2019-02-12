@@ -19,4 +19,8 @@ void add_nodes_to_array(tree t, int arr[], int i);
 
 int *tree_to_array(tree t, int *arr_length);
 
+int calc_vertex_size(int vertex);
+
+vertex_params *create_vertex_params(int v_s, int v_s_l, int v_s_r);
+
 #endif //CONSOLETREES_HELPERS_H

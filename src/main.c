@@ -68,6 +68,17 @@ void delete_layers_object(layer_ptr layer_first) {
     }
 }
 
+list get_list_element(list l, int j) {
+    int i = 0;
+    list el = l;
+    while (el != NULL) {
+        if (i == j) break;
+        el = l->next;
+        i++;
+    }
+    return el;
+}
+
 layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, int step_val, int n_u0) {
 
     // Get last layer
@@ -83,6 +94,16 @@ layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, in
     last_layer->params->m_o = step_T0;
     last_layer->params->n_u = n_u0;
     last_layer->params->m_u = step_T0 + 1;
+
+    // Init params of last layer vertices
+    list last_layer_vertex = last_layer->vertices;
+    int j = 0;
+    while (last_layer_vertex != NULL) {
+        last_layer_vertex->params->step_v_l = step_v0;
+        last_layer_vertex->params->j = j;
+        last_layer_vertex = last_layer_vertex->next;
+        j++;
+    }
 
     layer_ptr current_layer = last_layer->prev;
 
@@ -113,6 +134,34 @@ layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, in
 
         // Step value
         current_layer->params->step_val = step_val_prev;
+
+        int j = 0;
+        list vertex = current_layer->vertices;
+        while (vertex != NULL) {
+            vertex->params->j = j;
+            list v_left = get_list_element(current_layer->next->vertices, 2 * j);
+            list v_right = get_list_element(current_layer->next->vertices, 2 * j + 1);
+            if (j == 0) {
+                vertex->params->step_v_l =
+                        v_left->params->step_v_l +
+                        v_left->params->v_s +
+                        (v_right->params->step_v_l) / 2 -
+                        vertex->params->v_s_r;
+            } else {
+                list v_prev_right = get_list_element(current_layer->next->vertices, 2 * j - 1);
+                list v_prev = get_list_element(current_layer->vertices, j - 1);
+                vertex->params->step_v_l =
+                        v_prev_right->params->step_v_l / 2 +
+                        v_prev_right->params->v_s +
+                        v_left->params->step_v_l +
+                        v_left->params->v_s +
+                        v_right->params->step_v_l / 2 -
+                        v_prev->params->v_s_r -
+                        vertex->params->v_s_l;
+            }
+            j++;
+            // TODO: Count underlines, count | margin
+        }
 
         current_layer = current_layer->prev;
     }
@@ -180,8 +229,8 @@ void visualize_tree(tree t, int step_v0, int step_T0, int step_val, int n_u0) {
 }
 
 int main() {
-    int *arr = calloc(sizeof(int), 155);
-    tree root = array_to_tree(arr, 155);
+    int *arr = calloc(sizeof(int), 50);
+    tree root = array_to_tree(arr, 50);
     visualize_tree(root, 5, 3, 1, 1);
     deleteTree(root);
     return 0;

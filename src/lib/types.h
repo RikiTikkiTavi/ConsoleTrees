@@ -8,16 +8,21 @@ typedef struct node {
     tree right;
 } node;
 
+typedef struct vertex_params{
+    int step_v_l;
+    int v_s;
+    int v_s_l;
+    int v_s_r;
+    int j;
+} vertex_params;
+
 typedef struct list_el *list;
 typedef struct list_el {
     tree t_node;
+    vertex_params *params;
     list next;
-} list_el;
 
-typedef struct layers {
-    list currentLayer;
-    list nextLayer;
-} layers;
+} list_el;
 
 typedef struct layer_params {
     int step_v;
