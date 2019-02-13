@@ -13,6 +13,8 @@ typedef struct vertex_params{
     int v_s;
     int v_s_l;
     int v_s_r;
+    int n_u;
+    int m_edge;
     int j;
 } vertex_params;
 

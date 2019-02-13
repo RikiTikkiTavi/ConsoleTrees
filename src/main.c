@@ -79,6 +79,87 @@ list get_list_element(list l, int j) {
     return el;
 }
 
+int calc_first_v_step_v_l(list v_left, list v_right, list vertex) {
+    return v_left->params->step_v_l +
+           v_left->params->v_s +
+           (v_right->params->step_v_l) / 2 -
+           vertex->params->v_s_r;
+}
+
+int calc_v_step_v_l(list v_left, list v_right, list v_prev_right, list v_prev, list vertex) {
+    return v_prev_right->params->step_v_l / 2 +
+           v_prev_right->params->v_s +
+           v_left->params->step_v_l +
+           v_left->params->v_s +
+           v_right->params->step_v_l / 2 -
+           v_prev->params->v_s_r -
+           vertex->params->v_s_l;
+}
+
+int calc_underlines_left(list vertex, list v_next) {
+    if(vertex==NULL || v_next==NULL) {
+        printf("l: %d ::: int calc_underlines_left(list vertex, list v_next) -> Params must not be NULL!", __LINE__);
+        return 0;
+    }
+    return vertex->params->v_s_r + (v_next->params->step_v_l / 2) - 1;
+}
+
+int calc_underlines_right(list vertex) {
+    if(vertex==NULL) {
+        printf("l: %d ::: int calc_underlines_right(list vertex) -> Params must not be NULL!", __LINE__);
+        return 0;
+    }
+    return vertex->params->v_s_l + (vertex->params->step_v_l / 2) - 1;
+}
+
+int calc_edge_margin(list vertex){
+    return vertex->params->v_s_l + vertex->params->step_v_l;
+}
+
+int isEven(int n){
+    if (n&1 == 0){
+        return 1;
+    }
+    return 0;
+}
+
+void init_vertices_params(layer_ptr current_layer) {
+    int j = 0;
+    list vertex = current_layer->vertices;
+    while (vertex != NULL) {
+
+        vertex->params->j = j;
+        list v_left = get_list_element(current_layer->next->vertices, 2 * j);
+        list v_right = get_list_element(current_layer->next->vertices, 2 * j + 1);
+
+        if (j == 0) {
+            vertex->params->step_v_l = calc_first_v_step_v_l(v_left, v_right, vertex);
+            if(current_layer->params->layer_i!=1) {
+                list v_next = get_list_element(current_layer->vertices, j + 1);
+                vertex->params->n_u = calc_underlines_left(vertex, v_next);
+            }
+        } else {
+
+            list v_prev_right = get_list_element(current_layer->next->vertices, 2 * j - 1);
+            list v_prev = get_list_element(current_layer->vertices, j - 1);
+
+            vertex->params->step_v_l = calc_v_step_v_l(v_left, v_right, v_prev_right, v_prev, vertex);
+
+            if(isEven(j)){
+                list v_next = get_list_element(current_layer->vertices, j+1);
+                vertex->params->n_u = calc_underlines_left(vertex, v_next);
+            } else {
+                vertex->params->n_u = calc_underlines_right(vertex);
+            }
+
+        }
+        vertex->params->m_edge = calc_edge_margin(vertex);
+
+        vertex = vertex->next;
+        j++;
+    }
+}
+
 layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, int step_val, int n_u0) {
 
     // Get last layer
@@ -135,33 +216,7 @@ layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, in
         // Step value
         current_layer->params->step_val = step_val_prev;
 
-        int j = 0;
-        list vertex = current_layer->vertices;
-        while (vertex != NULL) {
-            vertex->params->j = j;
-            list v_left = get_list_element(current_layer->next->vertices, 2 * j);
-            list v_right = get_list_element(current_layer->next->vertices, 2 * j + 1);
-            if (j == 0) {
-                vertex->params->step_v_l =
-                        v_left->params->step_v_l +
-                        v_left->params->v_s +
-                        (v_right->params->step_v_l) / 2 -
-                        vertex->params->v_s_r;
-            } else {
-                list v_prev_right = get_list_element(current_layer->next->vertices, 2 * j - 1);
-                list v_prev = get_list_element(current_layer->vertices, j - 1);
-                vertex->params->step_v_l =
-                        v_prev_right->params->step_v_l / 2 +
-                        v_prev_right->params->v_s +
-                        v_left->params->step_v_l +
-                        v_left->params->v_s +
-                        v_right->params->step_v_l / 2 -
-                        v_prev->params->v_s_r -
-                        vertex->params->v_s_l;
-            }
-            j++;
-            // TODO: Count underlines, count | margin
-        }
+        init_vertices_params(current_layer);
 
         current_layer = current_layer->prev;
     }
