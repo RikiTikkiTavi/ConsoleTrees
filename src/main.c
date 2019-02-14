@@ -160,6 +160,30 @@ void init_vertices_params(layer_ptr current_layer) {
     }
 }
 
+void init_last_layer_vertices_params(layer_ptr last_layer, int step_v0){
+    // Init params of last layer vertices
+    list last_layer_vertex = last_layer->vertices;
+    int j = 0;
+    while (last_layer_vertex != NULL) {
+        last_layer_vertex->params->step_v_l = step_v0;
+        last_layer_vertex->params->j = j;
+
+        // Init number underlines
+        list v_next = last_layer_vertex->next;
+        if(isEven(j)){
+            last_layer_vertex->params->n_u = calc_underlines_left(last_layer_vertex, v_next);
+        } else {
+            last_layer_vertex->params->n_u = calc_underlines_right(last_layer_vertex);
+        }
+
+        // Init edge_y margin
+        last_layer_vertex->params->m_edge = calc_edge_margin(last_layer_vertex);
+
+        last_layer_vertex = last_layer_vertex->next;
+        j++;
+    }
+}
+
 layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, int step_val, int n_u0) {
 
     // Get last layer
@@ -176,15 +200,7 @@ layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, in
     last_layer->params->n_u = n_u0;
     last_layer->params->m_u = step_T0 + 1;
 
-    // Init params of last layer vertices
-    list last_layer_vertex = last_layer->vertices;
-    int j = 0;
-    while (last_layer_vertex != NULL) {
-        last_layer_vertex->params->step_v_l = step_v0;
-        last_layer_vertex->params->j = j;
-        last_layer_vertex = last_layer_vertex->next;
-        j++;
-    }
+    init_last_layer_vertices_params(last_layer, step_v0);
 
     layer_ptr current_layer = last_layer->prev;
 
@@ -284,8 +300,9 @@ void visualize_tree(tree t, int step_v0, int step_T0, int step_val, int n_u0) {
 }
 
 int main() {
-    int *arr = calloc(sizeof(int), 50);
-    tree root = array_to_tree(arr, 50);
+    // int *arr = calloc(sizeof(int), 15);
+    int arr[15];
+    tree root = array_to_tree(arr, 15);
     visualize_tree(root, 5, 3, 1, 1);
     deleteTree(root);
     return 0;

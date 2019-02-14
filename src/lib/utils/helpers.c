@@ -48,7 +48,7 @@ void deleteList(list l) {
     while (l != NULL) {
         next = l->next;
         free(l->params);
-        l->params=NULL;
+        l->params = NULL;
         free(l);
         l = next;
     }
@@ -106,10 +106,10 @@ int *tree_to_array(tree t, int *arr_length) {
 }
 
 int calc_vertex_size(int vertex) {
-    if(vertex==0) return 1;
-    int size = 0;
-    while(vertex!=0){
-        vertex/=10;
+    if (vertex == 0) return 1;
+    int size = vertex < 0 ? 1 : 0;
+    while (vertex != 0) {
+        vertex /= 10;
         size++;
     }
     return size;
