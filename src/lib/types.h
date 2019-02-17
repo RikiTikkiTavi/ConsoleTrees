@@ -27,21 +27,9 @@ typedef struct list_el {
 } list_el;
 
 typedef struct layer_params {
-    int step_v;
-    int step_t;
-    int step_val;
-    int m_o; // Outer margin
-    int n_u; // Quantity of underlines
-    int m_u; // Margin of underlines
     int layer_i;
     int n_vertex;
 } layer_params;
-
-typedef enum row_types {
-    VERTEX,
-    EDGE_X,
-    EDGE_Y
-} row_types;
 
 typedef struct layer_object *layer_ptr;
 typedef struct layer_object {

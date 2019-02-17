@@ -128,3 +128,81 @@ void log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list 
         printf("Prev: %d, Step: %d \n", v_prev->t_node->value, v_prev->params->step_v_l);
     printf("------\n");
 }
+
+int isEven(int n) {
+    if (n % 2 == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+list get_list_element(list l, int j) {
+    int i = 0;
+    while (l != NULL) {
+        if (i == j) break;
+        l = l->next;
+        i++;
+    }
+    return l;
+}
+
+void _delete_layers_object(layer_ptr layer_first) {
+    layer_ptr layer_current = layer_first;
+    layer_ptr next_layer;
+    while (layer_current != NULL) {
+
+        // Delete vertices list
+        deleteList(layer_current->vertices);
+        layer_current->vertices = NULL;
+
+        // Delete params
+        free(layer_current->params);
+        layer_current->params = NULL;
+
+        // Delete layer
+        next_layer = layer_current->next;
+        free(layer_current);
+
+        layer_current = next_layer;
+    }
+}
+
+layer_ptr _create_layer(list vertices, layer_params *params, layer_ptr prev) {
+    layer_ptr layer = malloc(sizeof(layer_object));
+    if (layer == NULL) {
+        printf("\nl: %d ::: Failed allocate memory for layer\n", __LINE__);
+        return NULL;
+    }
+    layer->params = params;
+    layer->vertices = vertices;
+    layer->next = NULL;
+    layer->prev = prev;
+    return layer;
+}
+
+layer_params *_create_params(int n_vertex, int layer_i) {
+
+    layer_params *params = malloc(sizeof(layer_params));
+    if (params == NULL) {
+        printf("\nl: %d ::: Memory allocation for params struct failed\n", __LINE__);
+        return NULL;
+    }
+    params->layer_i = layer_i;
+    params->n_vertex = n_vertex;
+
+    return params;
+}
+
+void _append_childs(layer_ptr c_layer, list left, list right) {
+    if (c_layer->next->vertices == NULL) {
+        c_layer->next->vertices = left;
+        c_layer->next->vertices->next = right;
+    } else {
+        list lastInNextLayer = c_layer->next->vertices;
+        while (lastInNextLayer->next != NULL) {
+            lastInNextLayer = lastInNextLayer->next;
+        }
+        lastInNextLayer->next = left;
+        lastInNextLayer->next->next = right;
+    }
+}
