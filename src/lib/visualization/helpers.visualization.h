@@ -1,7 +1,7 @@
 #ifndef CONSOLETREES_VISUALISATION_HELPERS_H
 #define CONSOLETREES_VISUALISATION_HELPERS_H
 
-#include "../types.h"
+#include "../utils/types.h"
 
 void print_margin(int margin);
 

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../types.h"
+#include "types.h"
 #include "calculators.h"
 
 int calc_tree_height(tree t) {

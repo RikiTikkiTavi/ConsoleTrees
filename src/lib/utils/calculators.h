@@ -1,4 +1,4 @@
-#include "../types.h"
+#include "types.h"
 
 #ifndef CONSOLETREES_CALCULATORS_H
 #define CONSOLETREES_CALCULATORS_H

@@ -1,7 +1,7 @@
 #ifndef CONSOLETREES_HELPERS_H
 #define CONSOLETREES_HELPERS_H
 
-#include "../types.h"
+#include "types.h"
 
 tree create_node(int value);
 

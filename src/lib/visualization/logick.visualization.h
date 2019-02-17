@@ -1,4 +1,4 @@
-#include "../types.h"
+#include "../utils/types.h"
 
 #ifndef CONSOLETREES_LOGICK_H
 #define CONSOLETREES_LOGICK_H

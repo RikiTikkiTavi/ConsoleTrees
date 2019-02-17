@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "logick.visualization.h"
-#include "../types.h"
+#include "../utils/types.h"
 #include "../utils/helpers.h"
 #include "../utils/calculators.h"
 #include "helpers.visualization.h"

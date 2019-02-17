@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include<string.h>
-
-#include "lib/types.h"
-#include "lib/utils/helpers.h"
-#include "lib/visualization/logick.visualization.h"
+#include "lib/ConsoleTrees.h"
 
 int main() {
     int arr[30];
