@@ -23,4 +23,6 @@ int calc_vertex_size(int vertex);
 
 vertex_params *create_vertex_params(int v_s, int v_s_l, int v_s_r);
 
+void log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev);
+
 #endif //CONSOLETREES_HELPERS_H

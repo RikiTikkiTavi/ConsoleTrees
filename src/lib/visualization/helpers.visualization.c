@@ -67,7 +67,6 @@ void print_edge_x_row(list vertices, struct layer_params *params) {
                 print_margin(vertex->params->m_edge + 1);
                 //Print Underlines
                 print_underlines(vertex->params->n_u);
-                //printf("%d %d", vertex->params->n_u, vertex->params->v_s_r+(vertex->next->params->step_v_l - 1) / 2 - 1);
                 printf("/");
                 is_second = 1;
             }

@@ -87,14 +87,18 @@ int calc_first_v_step_v_l(list v_left, list v_right, list vertex) {
 }
 
 int calc_v_step_v_l(list v_left, list v_right, list v_prev_right, list v_prev, list vertex) {
-    return (v_prev_right->params->step_v_l - 1) / 2 + v_prev_right->params->v_s + v_left->params->step_v_l +
-           v_left->params->v_s + (v_right->params->step_v_l - 1) / 2 - v_prev->params->v_s_r - vertex->params->v_s_l;
+    return (v_prev_right->params->step_v_l) / 2 +
+           v_prev_right->params->v_s +
+           v_left->params->step_v_l +
+           v_left->params->v_s +
+           (v_right->params->step_v_l - 1) / 2 -
+           v_prev->params->v_s_r -
+           vertex->params->v_s_l;
 }
 
 int calc_underlines_left(list vertex, list v_next) {
     if (vertex == NULL || v_next == NULL) {
         printf("l: %d ::: int calc_underlines_left(list vertex, list v_next) -> Params must not be NULL!", __LINE__);
-        printf("\n %d \n", vertex->t_node->value);
         return 0;
     }
     return vertex->params->v_s_r + (v_next->params->step_v_l - 1) / 2 - 1;
@@ -103,7 +107,6 @@ int calc_underlines_left(list vertex, list v_next) {
 int calc_underlines_right(list vertex, list v_prev) {
     if (vertex == NULL || v_prev == NULL) {
         printf("l: %d ::: int calc_underlines_right(list vertex, list v_prev) -> Params must not be NULL!", __LINE__);
-        //printf("\n %d \n", vertex->t_node->value);
         return 0;
     }
     return vertex->params->step_v_l +
@@ -131,7 +134,7 @@ int isEven(int n) {
 
 void init_n_u_vertices_params(list first_vertex) {
     // Handle 1 layer
-    if(first_vertex->next==NULL){
+    if (first_vertex->next == NULL) {
         first_vertex->params->n_u = 0;
         return;
     }
@@ -148,20 +151,6 @@ void init_n_u_vertices_params(list first_vertex) {
         vertex = vertex->next;
         j++;
     }
-}
-
-void log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev) {
-    if (vertex->t_node != NULL)
-        printf("Value: %d, Step: %d \n", vertex->t_node->value, vertex->params->step_v_l);
-    if (v_left->t_node != NULL)
-        printf("Left: %d, Step: %d \n", v_left->t_node->value, v_left->params->step_v_l);
-    if (v_right->t_node != NULL)
-        printf("Right: %d, Step: %d \n", v_right->t_node->value, v_right->params->step_v_l);
-    if (v_prev_right->t_node != NULL)
-        printf("Prev right: %d, Step: %d \n", v_prev_right->t_node->value, v_prev_right->params->step_v_l);
-    if (v_prev->t_node != NULL)
-        printf("Prev: %d, Step: %d \n", v_prev->t_node->value, v_prev->params->step_v_l);
-    printf("------\n");
 }
 
 void init_vertices_params(layer_ptr current_layer) {
@@ -204,8 +193,6 @@ void init_vertices_params(layer_ptr current_layer) {
 
             // Calculate margin of edge_y
             vertex->params->m_edge = calc_edge_margin(vertex, v_prev);
-
-            log_vertex(vertex, v_left, v_right, v_prev_right, v_prev);
         }
 
         // Go to next vertex

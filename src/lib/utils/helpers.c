@@ -114,3 +114,17 @@ int calc_vertex_size(int vertex) {
     }
     return size;
 }
+
+void log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev) {
+    if (vertex->t_node != NULL)
+        printf("Value: %d, Step: %d \n", vertex->t_node->value, vertex->params->step_v_l);
+    if (v_left->t_node != NULL)
+        printf("Left: %d, Step: %d \n", v_left->t_node->value, v_left->params->step_v_l);
+    if (v_right->t_node != NULL)
+        printf("Right: %d, Step: %d \n", v_right->t_node->value, v_right->params->step_v_l);
+    if (v_prev_right->t_node != NULL)
+        printf("Prev right: %d, Step: %d \n", v_prev_right->t_node->value, v_prev_right->params->step_v_l);
+    if (v_prev->t_node != NULL)
+        printf("Prev: %d, Step: %d \n", v_prev->t_node->value, v_prev->params->step_v_l);
+    printf("------\n");
+}
