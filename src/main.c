@@ -73,7 +73,7 @@ list get_list_element(list l, int j) {
     list el = l;
     while (el != NULL) {
         if (i == j) break;
-        el = l->next;
+        el = el->next;
         i++;
     }
     return el;
@@ -82,45 +82,86 @@ list get_list_element(list l, int j) {
 int calc_first_v_step_v_l(list v_left, list v_right, list vertex) {
     return v_left->params->step_v_l +
            v_left->params->v_s +
-           (v_right->params->step_v_l) / 2 -
-           vertex->params->v_s_r;
+           (v_right->params->step_v_l - 1) / 2 -
+           vertex->params->v_s_l; // TODO: Test, is v_s_l correct?
 }
 
 int calc_v_step_v_l(list v_left, list v_right, list v_prev_right, list v_prev, list vertex) {
-    return v_prev_right->params->step_v_l / 2 +
-           v_prev_right->params->v_s +
-           v_left->params->step_v_l +
-           v_left->params->v_s +
-           v_right->params->step_v_l / 2 -
-           v_prev->params->v_s_r -
-           vertex->params->v_s_l;
+    return (v_prev_right->params->step_v_l - 1) / 2 + v_prev_right->params->v_s + v_left->params->step_v_l +
+           v_left->params->v_s + (v_right->params->step_v_l - 1) / 2 - v_prev->params->v_s_r - vertex->params->v_s_l;
 }
 
 int calc_underlines_left(list vertex, list v_next) {
-    if(vertex==NULL || v_next==NULL) {
+    if (vertex == NULL || v_next == NULL) {
         printf("l: %d ::: int calc_underlines_left(list vertex, list v_next) -> Params must not be NULL!", __LINE__);
+        printf("\n %d \n", vertex->t_node->value);
         return 0;
     }
-    return vertex->params->v_s_r + (v_next->params->step_v_l / 2) - 1;
+    return vertex->params->v_s_r + (v_next->params->step_v_l - 1) / 2 - 1;
 }
 
-int calc_underlines_right(list vertex) {
-    if(vertex==NULL) {
-        printf("l: %d ::: int calc_underlines_right(list vertex) -> Params must not be NULL!", __LINE__);
+int calc_underlines_right(list vertex, list v_prev) {
+    if (vertex == NULL || v_prev == NULL) {
+        printf("l: %d ::: int calc_underlines_right(list vertex, list v_prev) -> Params must not be NULL!", __LINE__);
+        //printf("\n %d \n", vertex->t_node->value);
         return 0;
     }
-    return vertex->params->v_s_l + (vertex->params->step_v_l / 2) - 1;
+    return vertex->params->step_v_l +
+           v_prev->params->v_s_r +
+           vertex->params->v_s_l -
+           v_prev->params->n_u -
+           3;
+
 }
 
-int calc_edge_margin(list vertex){
+int calc_edge_margin(list vertex, list v_prev) {
+    return vertex->params->v_s_l + vertex->params->step_v_l + v_prev->params->v_s_r;
+}
+
+int calc_first_edge_margin(list vertex) {
     return vertex->params->v_s_l + vertex->params->step_v_l;
 }
 
-int isEven(int n){
-    if (n&1 == 0){
+int isEven(int n) {
+    if (n % 2 == 0) {
         return 1;
     }
     return 0;
+}
+
+void init_n_u_vertices_params(list first_vertex) {
+    // Handle 1 layer
+    if(first_vertex->next==NULL){
+        first_vertex->params->n_u = 0;
+        return;
+    }
+    list vertex = first_vertex;
+    int j = 0;
+    list v_prev = NULL;
+    while (vertex != NULL) {
+        if (isEven(j)) {
+            vertex->params->n_u = calc_underlines_left(vertex, vertex->next);
+        } else {
+            vertex->params->n_u = calc_underlines_right(vertex, v_prev);
+        }
+        v_prev = vertex;
+        vertex = vertex->next;
+        j++;
+    }
+}
+
+void log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev) {
+    if (vertex->t_node != NULL)
+        printf("Value: %d, Step: %d \n", vertex->t_node->value, vertex->params->step_v_l);
+    if (v_left->t_node != NULL)
+        printf("Left: %d, Step: %d \n", v_left->t_node->value, v_left->params->step_v_l);
+    if (v_right->t_node != NULL)
+        printf("Right: %d, Step: %d \n", v_right->t_node->value, v_right->params->step_v_l);
+    if (v_prev_right->t_node != NULL)
+        printf("Prev right: %d, Step: %d \n", v_prev_right->t_node->value, v_prev_right->params->step_v_l);
+    if (v_prev->t_node != NULL)
+        printf("Prev: %d, Step: %d \n", v_prev->t_node->value, v_prev->params->step_v_l);
+    printf("------\n");
 }
 
 void init_vertices_params(layer_ptr current_layer) {
@@ -128,60 +169,75 @@ void init_vertices_params(layer_ptr current_layer) {
     list vertex = current_layer->vertices;
     while (vertex != NULL) {
 
+        // Set element number
         vertex->params->j = j;
+
+        // Get left child
         list v_left = get_list_element(current_layer->next->vertices, 2 * j);
+        // Get right child
         list v_right = get_list_element(current_layer->next->vertices, 2 * j + 1);
 
+        // If element is first element in layer
         if (j == 0) {
+
+            // Calculate left margin of current vertex
             vertex->params->step_v_l = calc_first_v_step_v_l(v_left, v_right, vertex);
-            if(current_layer->params->layer_i!=1) {
-                list v_next = get_list_element(current_layer->vertices, j + 1);
-                vertex->params->n_u = calc_underlines_left(vertex, v_next);
+
+            // If current layer is not first
+            if (current_layer->params->layer_i != 1) {
+
+                // Calculate margin of edge_y
+                vertex->params->m_edge = calc_first_edge_margin(vertex);
+
             }
         } else {
 
+            // Element is not first
+
+            // Get right child of previous vertex
             list v_prev_right = get_list_element(current_layer->next->vertices, 2 * j - 1);
+            // Get previous vertex
             list v_prev = get_list_element(current_layer->vertices, j - 1);
 
+            // Calculate left margin of current vertex
             vertex->params->step_v_l = calc_v_step_v_l(v_left, v_right, v_prev_right, v_prev, vertex);
 
-            if(isEven(j)){
-                list v_next = get_list_element(current_layer->vertices, j+1);
-                vertex->params->n_u = calc_underlines_left(vertex, v_next);
-            } else {
-                vertex->params->n_u = calc_underlines_right(vertex);
-            }
+            // Calculate margin of edge_y
+            vertex->params->m_edge = calc_edge_margin(vertex, v_prev);
 
+            log_vertex(vertex, v_left, v_right, v_prev_right, v_prev);
         }
-        vertex->params->m_edge = calc_edge_margin(vertex);
 
+        // Go to next vertex
         vertex = vertex->next;
         j++;
     }
+
+    // Calculate number of underlines for each vertex
+    init_n_u_vertices_params(current_layer->vertices);
 }
 
-void init_last_layer_vertices_params(layer_ptr last_layer, int step_v0){
+void init_last_layer_vertices_params(layer_ptr last_layer, int step_v0) {
     // Init params of last layer vertices
     list last_layer_vertex = last_layer->vertices;
     int j = 0;
+    list v_prev = NULL;
     while (last_layer_vertex != NULL) {
         last_layer_vertex->params->step_v_l = step_v0;
         last_layer_vertex->params->j = j;
 
-        // Init number underlines
-        list v_next = last_layer_vertex->next;
-        if(isEven(j)){
-            last_layer_vertex->params->n_u = calc_underlines_left(last_layer_vertex, v_next);
+        // Init edge_y margin
+        if (j == 0) {
+            last_layer_vertex->params->m_edge = calc_first_edge_margin(last_layer_vertex);
         } else {
-            last_layer_vertex->params->n_u = calc_underlines_right(last_layer_vertex);
+            last_layer_vertex->params->m_edge = calc_edge_margin(last_layer_vertex, v_prev);
         }
 
-        // Init edge_y margin
-        last_layer_vertex->params->m_edge = calc_edge_margin(last_layer_vertex);
-
+        v_prev = last_layer_vertex;
         last_layer_vertex = last_layer_vertex->next;
         j++;
     }
+    init_n_u_vertices_params(last_layer->vertices);
 }
 
 layer_ptr init_layers_params(layer_ptr layer_first, int step_v0, int step_T0, int step_val, int n_u0) {
@@ -266,12 +322,11 @@ layer_ptr init_layers(tree t) {
             if (vertex->t_node == NULL) {
                 // Emulated node
                 append_childs(c_layer, create_list_el(NULL), create_list_el(NULL));
-                vertex = vertex->next;
             } else {
                 // Real node
                 append_childs(c_layer, create_list_el(vertex->t_node->left), create_list_el(vertex->t_node->right));
-                vertex = vertex->next;
             }
+            vertex = vertex->next;
         }
 
         c_layer = c_layer->next;
@@ -300,9 +355,9 @@ void visualize_tree(tree t, int step_v0, int step_T0, int step_val, int n_u0) {
 }
 
 int main() {
-    // int *arr = calloc(sizeof(int), 15);
-    int arr[15];
-    tree root = array_to_tree(arr, 15);
+    //int *arr = calloc(sizeof(int), 25);
+    int arr[30];
+    tree root = array_to_tree(arr, 30);
     visualize_tree(root, 5, 3, 1, 1);
     deleteTree(root);
     return 0;

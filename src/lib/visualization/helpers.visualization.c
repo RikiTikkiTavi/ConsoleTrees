@@ -56,7 +56,7 @@ void print_edge_x_row(list vertices, struct layer_params *params) {
     for (list vertex = vertices; vertex != NULL; vertex = vertex->next) {
 
         if (vertex->t_node != NULL) {
-            if(is_second){
+            if (is_second) {
                 printf(" \\");
                 // Print Underlines
                 print_underlines(vertex->params->n_u);
@@ -64,21 +64,22 @@ void print_edge_x_row(list vertices, struct layer_params *params) {
                 is_second = 0;
             } else {
                 //Print margin of | + 1
-                print_margin(vertex->params->m_edge+1);
+                print_margin(vertex->params->m_edge + 1);
                 //Print Underlines
                 print_underlines(vertex->params->n_u);
+                //printf("%d %d", vertex->params->n_u, vertex->params->v_s_r+(vertex->next->params->step_v_l - 1) / 2 - 1);
                 printf("/");
                 is_second = 1;
             }
         } else {
-            if(is_second){
+            if (is_second) {
                 printf("  ");
                 // Print Underlines
                 print_margin(vertex->params->n_u);
                 is_second = 0;
             } else {
                 //Print margin of | + 1 and empty underlines
-                print_margin(vertex->params->m_edge+1 + vertex->params->n_u);
+                print_margin(vertex->params->m_edge + 1 + vertex->params->n_u);
                 printf(" ");
                 is_second = 1;
             }
