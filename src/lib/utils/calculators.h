@@ -3,11 +3,7 @@
 #ifndef CONSOLETREES_CALCULATORS_H
 #define CONSOLETREES_CALCULATORS_H
 
-void count_vertices(tree t, int *i);
-
-int prom(tree t);
-
-int calc_tree_height(tree t);
+void _count_vertices(tree t, int *i);
 
 int _calc_first_v_step_v_l(list v_left, list v_right, list vertex);
 

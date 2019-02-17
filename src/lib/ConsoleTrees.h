@@ -3,6 +3,7 @@
 
 #include "utils/types.h"
 #include "utils/helpers.h"
+#include "tools/tree-methods.h"
 #include "visualization/logick.visualization.h"
 
 #endif //CONSOLETREES_CONSOLETREES_H

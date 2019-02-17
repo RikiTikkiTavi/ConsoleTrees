@@ -3,30 +3,66 @@
 
 #include "types.h"
 
+/**
+ * @description Creates tree node with node->value = value
+ * @param value - integer
+ * @return tree pointer
+ */
 tree create_node(int value);
 
+/**
+ * @description Creates list element
+ * @param t_node
+ * @return list pointer
+ */
 list create_list_el(tree t_node);
 
-void deleteTree(tree t);
+/**
+ * @description Frees memory, where tree is allocated
+ * @param t - tree pointer
+ */
+void delete_tree(tree t);
 
-void deleteList(list l);
+/**
+ * @description Frees memory, where list is allocated
+ * @param l
+ */
+void delete_list(list l);
 
-void create_subtree(tree t, int arr[], int i, int arr_length);
+void _create_subtree(tree t, int *arr, int i, int arr_length);
 
+/**
+ * @description Converts tree from array
+ * @param arr - integer array
+ * @param arr_length - length of array
+ * @return pointer on tree root
+ */
 tree array_to_tree(int arr[], int arr_length);
 
-void add_nodes_to_array(tree t, int arr[], int i);
+void _add_nodes_to_array(tree t, int *arr, int i);
 
+/**
+ * @description Converts tree to array
+ * @param t - pointer on tree
+ * @param arr_length - length of array
+ * @return pointer on tree
+ */
 int *tree_to_array(tree t, int *arr_length);
 
-int calc_vertex_size(int vertex);
+int _calc_vertex_size(int vertex);
 
-vertex_params *create_vertex_params(int v_s, int v_s_l, int v_s_r);
+vertex_params *_create_vertex_params(int v_s, int v_s_l, int v_s_r);
 
-void log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev);
+void _log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev);
 
 int isEven(int n);
 
+/**
+ * @description Gets j element of linked list l
+ * @param l linked list
+ * @param j
+ * @return
+ */
 list get_list_element(list l, int j);
 
 void _append_childs(layer_ptr c_layer, list left, list right);

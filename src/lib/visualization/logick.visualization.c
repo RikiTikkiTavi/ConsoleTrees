@@ -5,6 +5,7 @@
 #include "../utils/helpers.h"
 #include "../utils/calculators.h"
 #include "helpers.visualization.h"
+#include "../tools/tree-methods.h"
 
 void _init_n_u_vertices_params(list first_vertex);
 
@@ -34,7 +35,7 @@ void visualize_tree(tree t, int step_v0) {
 
     // Print each layer
     for (; layer_current != NULL; layer_current = layer_current->next) {
-        print_layer(layer_current);
+        _print_layer(layer_current);
     }
 
     _delete_layers_object(layer_first);
