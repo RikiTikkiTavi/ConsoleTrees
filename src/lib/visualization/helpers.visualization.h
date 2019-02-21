@@ -9,7 +9,7 @@ void _print_underlines(int n);
 
 void _print_val(tree t_node, char *val_to_string(void *val));
 
-void _print_edge_y_row(list vertices, struct layer_params *params);
+void _print_edge_y_row(list vertices);
 
 void _print_edge_x_row(list vertices);
 

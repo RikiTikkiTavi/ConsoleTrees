@@ -39,7 +39,7 @@ void _create_subtree(tree t, int *arr, int i, int arr_length);
  */
 tree array_to_tree(int arr[], int arr_length);
 
-void _add_nodes_to_array(tree t, int *arr, int i);
+void _add_nodes_to_array(tree t, int *arr, int k);
 
 /**
  * @description Converts tree to array

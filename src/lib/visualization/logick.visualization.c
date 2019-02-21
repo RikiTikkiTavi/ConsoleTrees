@@ -20,7 +20,7 @@ void visualize_tree(tree t, int step_v0, char *val_to_string(void *val)) {
 
     // Init layers_object
     layer_ptr layer_first = _init_layers(t, val_to_string);
-    layer_ptr layer_last = _init_layers_params(layer_first, step_v0);
+    _init_layers_params(layer_first, step_v0);
 
     layer_ptr layer_current = layer_first;
 
@@ -31,7 +31,6 @@ void visualize_tree(tree t, int step_v0, char *val_to_string(void *val)) {
 
     _delete_layers_object(layer_first);
     layer_first = NULL;
-    layer_last = NULL;
 }
 
 layer_ptr _init_layers(tree t, char *val_to_string(void *val)) {

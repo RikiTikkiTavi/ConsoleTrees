@@ -74,7 +74,7 @@ void _print_edge_x_row(list vertices) {
     }
 }
 
-void _print_edge_y_row(list vertices, struct layer_params *params) {
+void _print_edge_y_row(list vertices) {
 
     for (list vertex = vertices; vertex != NULL; vertex = vertex->next) {
 
@@ -99,7 +99,7 @@ void _print_layer(layer_ptr layer, char *val_to_string(void *val)) {
         // Print all rows
         _print_edge_x_row(layer->vertices);
         printf("\n");
-        _print_edge_y_row(layer->vertices, layer->params);
+        _print_edge_y_row(layer->vertices);
         printf("\n");
         _print_vertex_row(layer->vertices, val_to_string);
         printf("\n");

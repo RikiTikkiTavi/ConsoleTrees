@@ -101,11 +101,11 @@ tree array_to_tree(int arr[], int arr_length) {
     return root;
 }
 
-void _add_nodes_to_array(tree t, int *arr, int i) {
+void _add_nodes_to_array(tree t, int *arr, int k) {
     if (t == NULL) return;
-    arr[i] = t->value;
-    _add_nodes_to_array(t->left, arr, 2i + 1);
-    _add_nodes_to_array(t->right, arr, 2i + 2);
+    arr[k] = t->value;
+    _add_nodes_to_array(t->left, arr, 2*k + 1);
+    _add_nodes_to_array(t->right, arr, 2*k + 2);
 }
 
 int *tree_to_array(tree t, int *arr_length) {
