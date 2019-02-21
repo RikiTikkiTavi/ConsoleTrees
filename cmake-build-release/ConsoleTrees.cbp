@@ -103,12 +103,6 @@
 		<Unit filename="/home/egor/CLionProjects/ConsoleTrees/src/lib/utils/types.h">
 			<Option target="ConsoleTrees"/>
 		</Unit>
-		<Unit filename="/home/egor/CLionProjects/ConsoleTrees/src/lib/visualization/callbacks.visualization.c">
-			<Option target="ConsoleTrees"/>
-		</Unit>
-		<Unit filename="/home/egor/CLionProjects/ConsoleTrees/src/lib/visualization/callbacks.visualization.h">
-			<Option target="ConsoleTrees"/>
-		</Unit>
 		<Unit filename="/home/egor/CLionProjects/ConsoleTrees/src/lib/visualization/helpers.visualization.c">
 			<Option target="ConsoleTrees"/>
 		</Unit>
