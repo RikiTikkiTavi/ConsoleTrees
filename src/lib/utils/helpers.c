@@ -10,6 +10,8 @@ tree create_node(int value) {
         return t;
     }
     t->value = value;
+    t->left = NULL;
+    t->right = NULL;
     return t;
 }
 
@@ -40,8 +42,11 @@ void delete_tree(tree t) {
     tree left = t->left;
     tree right = t->right;
     free(t);
-    delete_tree(t->left);
-    delete_tree(t->right);
+    t->left = NULL;
+    t->right = NULL;
+    t = NULL;
+    delete_tree(left);
+    delete_tree(right);
 }
 
 void delete_list(list l) {

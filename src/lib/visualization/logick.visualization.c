@@ -7,16 +7,6 @@
 #include "helpers.visualization.h"
 #include "../tools/tree-methods.h"
 
-void _init_n_u_vertices_params(list first_vertex);
-
-void _init_vertices_params(layer_ptr current_layer);
-
-void _init_last_layer_vertices_params(layer_ptr last_layer, int step_v0);
-
-layer_ptr _init_layers_params(layer_ptr layer_first, int step_v0);
-
-layer_ptr _init_layers(tree t);
-
 void visualize_tree(tree t, int step_v0) {
 
     if(t==NULL)
