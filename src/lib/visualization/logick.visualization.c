@@ -7,25 +7,26 @@
 #include "helpers.visualization.h"
 #include "../tools/tree-methods.h"
 
-void visualize_tree(tree t, int step_v0) {
+void visualize_tree(tree t, int step_v0, char *val_to_string(void *val)) {
 
-    if(t==NULL)
+    if (t == NULL)
         return;
 
-    if(step_v0 < 3){
-        printf("\nl: %d ::: Error in visualize_tree(tree t, int step_v0) ::: step_v0 must be bigger then 3\n", __LINE__);
+    if (step_v0 < 3) {
+        printf("\nl: %d ::: Error in visualize_tree(tree t, int step_v0) ::: step_v0 must be bigger then 3\n",
+               __LINE__);
         return;
     }
 
     // Init layers_object
-    layer_ptr layer_first = _init_layers(t);
+    layer_ptr layer_first = _init_layers(t, val_to_string);
     layer_ptr layer_last = _init_layers_params(layer_first, step_v0);
 
     layer_ptr layer_current = layer_first;
 
     // Print each layer
     for (; layer_current != NULL; layer_current = layer_current->next) {
-        _print_layer(layer_current);
+        _print_layer(layer_current, val_to_string);
     }
 
     _delete_layers_object(layer_first);
@@ -33,9 +34,9 @@ void visualize_tree(tree t, int step_v0) {
     layer_last = NULL;
 }
 
-layer_ptr _init_layers(tree t) {
+layer_ptr _init_layers(tree t, char *val_to_string(void *val)) {
 
-    layer_ptr layer_first = _create_layer(create_list_el(t), _create_params(1, 1), NULL);
+    layer_ptr layer_first = _create_layer(create_list_el(t, val_to_string), _create_params(1, 1), NULL);
 
     int h_max = calc_tree_height(t);
     int layer_i = 1;
@@ -57,10 +58,18 @@ layer_ptr _init_layers(tree t) {
         while (vertex != NULL) {
             if (vertex->t_node == NULL) {
                 // Emulated node
-                _append_childs(c_layer, create_list_el(NULL), create_list_el(NULL));
+                _append_childs(
+                        c_layer,
+                        create_list_el(NULL, val_to_string),
+                        create_list_el(NULL, val_to_string)
+                );
             } else {
                 // Real node
-                _append_childs(c_layer, create_list_el(vertex->t_node->left), create_list_el(vertex->t_node->right));
+                _append_childs(
+                        c_layer,
+                        create_list_el(vertex->t_node->left, val_to_string),
+                        create_list_el(vertex->t_node->right, val_to_string)
+                );
             }
             vertex = vertex->next;
         }

@@ -15,7 +15,7 @@ tree create_node(int value);
  * @param t_node
  * @return list pointer
  */
-list create_list_el(tree t_node);
+list create_list_el(tree t_node, char *val_to_string(void *val));
 
 /**
  * @description Frees memory, where tree is allocated
@@ -49,7 +49,7 @@ void _add_nodes_to_array(tree t, int *arr, int i);
  */
 int *tree_to_array(tree t, int *arr_length);
 
-int _calc_vertex_size(int vertex);
+int _calc_vertex_size(void *val, char *val_to_string(void *val));
 
 vertex_params *_create_vertex_params(int v_s, int v_s_l, int v_s_r);
 
@@ -72,5 +72,7 @@ layer_params *_create_params(int n_vertex, int layer_i);
 layer_ptr _create_layer(list vertices, layer_params *params, layer_ptr prev);
 
 void _delete_layers_object(layer_ptr layer_first);
+
+char *int_to_string(void *n);
 
 #endif //CONSOLETREES_HELPERS_H

@@ -15,7 +15,17 @@ void _print_underlines(int n) {
     }
 }
 
-void _print_vertex_row(list vertices, struct layer_params *params) {
+void _print_val(tree t_node, char *(*val_to_string)(void *val)) {
+    if (t_node == NULL) {
+        printf(" ");
+    } else {
+        char *str_buffer = val_to_string(&(t_node->value));
+        printf("%s", str_buffer);
+        free(str_buffer);
+    }
+}
+
+void _print_vertex_row(list vertices, char *val_to_string(void *val)) {
 
     for (list vertex = vertices; vertex != NULL; vertex = vertex->next) {
 
@@ -23,8 +33,8 @@ void _print_vertex_row(list vertices, struct layer_params *params) {
         _print_margin(vertex->params->step_v_l);
 
         // Print vertex value
-        if (vertex->t_node != NULL) printf("%d", vertex->t_node->value);
-        else printf(" ");
+        _print_val(vertex->t_node, val_to_string);
+
     }
 }
 
@@ -78,11 +88,11 @@ void _print_edge_y_row(list vertices, struct layer_params *params) {
     }
 }
 
-void _print_layer(layer_ptr layer) {
+void _print_layer(layer_ptr layer, char *val_to_string(void *val)) {
     if (layer->params->layer_i == 1) {
         // Print only vertex row
         printf("\n");
-        _print_vertex_row(layer->vertices, layer->params);
+        _print_vertex_row(layer->vertices, val_to_string);
         printf("\n");
 
     } else {
@@ -91,7 +101,7 @@ void _print_layer(layer_ptr layer) {
         printf("\n");
         _print_edge_y_row(layer->vertices, layer->params);
         printf("\n");
-        _print_vertex_row(layer->vertices, layer->params);
+        _print_vertex_row(layer->vertices, val_to_string);
         printf("\n");
     }
 }

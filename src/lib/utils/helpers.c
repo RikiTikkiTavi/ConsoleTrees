@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "calculators.h"
 #include "helpers.h"
 
@@ -15,7 +16,7 @@ tree create_node(int value) {
     return t;
 }
 
-list create_list_el(tree t_node) {
+list create_list_el(tree t_node, char *val_to_string(void *val)) {
     list l = (list) malloc(sizeof(list_el));
     if (l == NULL) {
         printf("\nl: %d ::: Memory allocation for list failed\n", __LINE__);
@@ -25,7 +26,7 @@ list create_list_el(tree t_node) {
     if (t_node == NULL) {
         l->params = _create_vertex_params(1, 0, 0);
     } else {
-        int v_s = _calc_vertex_size(t_node->value);
+        int v_s = _calc_vertex_size(&(t_node->value), val_to_string);
         int v_s_l = (v_s - 1) / 2;
         int v_s_r = v_s - v_s_l - 1;
         l->params = _create_vertex_params(v_s, v_s_l, v_s_r);
@@ -50,7 +51,7 @@ void delete_tree(tree t) {
 }
 
 void delete_list(list l) {
-    if(l==NULL){
+    if (l == NULL) {
         printf("\nl: %d ::: Error in delete_list(list l) ::: list l must not be NULL\n", __LINE__);
     }
     list next;
@@ -90,7 +91,7 @@ void _create_subtree(tree t, int *arr, int i, int arr_length) {
 }
 
 tree array_to_tree(int arr[], int arr_length) {
-    if(arr==NULL){
+    if (arr == NULL) {
         printf("\nl: %d ::: Error in array_to_tree(int arr[], int arr_length) ::: arr must not be NULL\n", __LINE__);
         return NULL;
     }
@@ -108,7 +109,7 @@ void _add_nodes_to_array(tree t, int *arr, int i) {
 }
 
 int *tree_to_array(tree t, int *arr_length) {
-    if(t==NULL || arr_length == NULL){
+    if (t == NULL || arr_length == NULL) {
         printf("l: %d ::: Error in *tree_to_array(tree t, int *arr_length) ::: args must not be NULL", __LINE__);
         return 0;
     }
@@ -123,14 +124,14 @@ int *tree_to_array(tree t, int *arr_length) {
     return arr;
 }
 
-int _calc_vertex_size(int vertex) {
-    if (vertex == 0) return 1;
-    int size = vertex < 0 ? 1 : 0;
-    while (vertex != 0) {
-        vertex /= 10;
-        size++;
+int _calc_vertex_size(void *val, char *val_to_string(void *val)) {
+    if (val == NULL) {
+        printf("\nl: %d ::: _calc_vertex_size(void *val, char *val_to_string(void *val)) value is NULL", __LINE__);
     }
-    return size;
+    char* str_buffer = val_to_string(val);
+    int str_length = (int) strlen(str_buffer);
+    free(str_buffer);
+    return str_length;
 }
 
 void _log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev) {
@@ -223,4 +224,16 @@ void _append_childs(layer_ptr c_layer, list left, list right) {
         lastInNextLayer->next = left;
         lastInNextLayer->next->next = right;
     }
+}
+
+char *int_to_string(void *val) {
+    if(val==NULL){
+        printf("\nl: %d ::: Error in int_to_string(void *val) ::: val is NULL\n", __LINE__);
+        char *str_buffer = calloc(1, 15);
+        sprintf(str_buffer, "%d", 0);
+        return str_buffer;
+    }
+    char *str_buffer = calloc(1, 15);
+    sprintf(str_buffer, "%d", (*(int *) val));
+    return str_buffer;
 }
