@@ -28,7 +28,7 @@ void _print_vertex_row(list vertices, struct layer_params *params) {
     }
 }
 
-void _print_edge_x_row(list vertices, struct layer_params *params) {
+void _print_edge_x_row(list vertices) {
 
     int is_second = 0;
 
@@ -51,14 +51,12 @@ void _print_edge_x_row(list vertices, struct layer_params *params) {
             }
         } else {
             if (is_second) {
-                printf("  ");
-                // Print Underlines
-                _print_margin(vertex->params->n_u);
+                // print " \" + empty underlines + 1
+                _print_margin(2 + vertex->params->n_u + 1);
                 is_second = 0;
             } else {
-                //Print margin of | + 1 and empty underlines
-                _print_margin(vertex->params->m_edge + 1 + vertex->params->n_u);
-                printf(" ");
+                //Print margin of | + 1 + empty underlines + /
+                _print_margin(vertex->params->m_edge + 1 + vertex->params->n_u + 1);
                 is_second = 1;
             }
 
@@ -89,7 +87,7 @@ void _print_layer(layer_ptr layer) {
 
     } else {
         // Print all rows
-        _print_edge_x_row(layer->vertices, layer->params);
+        _print_edge_x_row(layer->vertices);
         printf("\n");
         _print_edge_y_row(layer->vertices, layer->params);
         printf("\n");
