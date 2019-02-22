@@ -99,7 +99,7 @@ Takes 2 arguments: <br/>
 ``` int *arr ``` - pointer on integer array <br/>
 ```  int arr_length ``` - length of array
 
-Returns:
+Returns: <br/>
 ```ct_tree```  variable - root of tree
 
 #### Create node of tree:
@@ -111,7 +111,7 @@ Creates nodes (```ct_node```) for ```ct_tree ``` (pointer on ```ct_node```)
 Takes 1 argument: <br/>
 ```void *value_ptr``` - pointer on node value;
 
-Returns:
+Returns: <br/>
 ```ct_tree``` variable - pointer on t_node
 
 #### Delete tree
@@ -132,7 +132,7 @@ Calculates height of tree
 Takes 1 argument: <br/>
 ```ct_tree t ``` - pointer on tree root
 
-Returns:
+Returns: <br/>
 ```int ``` variable - tree height
 
 #### Create right-only tree:
@@ -145,7 +145,7 @@ Takes 2 arguments: <br/>
 ```int *values``` - integer array <br/>
 ```int values_q``` - array length
 
-Returns:
+Returns: <br/>
 ```ct_tree``` variable - pointer on tree root
 
 #### Create random 1-regular tree:
@@ -158,7 +158,7 @@ Takes 2 arguments: <br/>
 ```int values[]``` - integer array <br/>
 ```int values_q``` - array length
 
-Returns
+Returns: <br/>
 ```ct_tree``` variable - pointer on tree root
 
 ## Types
