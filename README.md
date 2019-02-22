@@ -6,9 +6,9 @@ with binary trees.
 ![ConsoleTrees screenshot 1](https://github.com/RikiTikkiTavi/ConsoleTrees/blob/docs/docs/images/Screen2.png)
 
 ## Table of contents:
-[Installation](https://github.com/RikiTikkiTavi/ConsoleTrees#installation)
-[Usage guide](https://github.com/RikiTikkiTavi/ConsoleTrees#usage--guide)
-[Types](https://github.com/RikiTikkiTavi/ConsoleTrees#types)
+[Installation](https://github.com/RikiTikkiTavi/ConsoleTrees#installation) <br>
+[Usage guide](https://github.com/RikiTikkiTavi/ConsoleTrees#usage--guide) <br>
+[Types](https://github.com/RikiTikkiTavi/ConsoleTrees#types) <br>
 
 
 ## Installation
