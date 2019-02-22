@@ -52,13 +52,13 @@ Include ConsoleTrees.h:
 void ct_visualize_tree(ct_tree t, int step_v0, char *val_to_string(void *val));
 ```
 
-Accepts 3 arguments:
+Accepts 3 arguments: <br>
 ```ct_tree t``` - root of tree <br/>
 ```int step_v0```  - initial margin between 2 vertices (recommend ```step_v0 = 5 ``` ) <br/>
 ```char *val_to_string(void *val)``` - pointer on function to convert value of tree node to string <br/>
 
-So:
-1: You must convert your tree to following type, declared in /ConsoleTrees/src/lib/utils/types.h.
+So: <br>
+1: You must convert your tree to following type, declared in /ConsoleTrees/src/lib/utils/types.h. <br>
 ( For that purpose you can use [ct_tree ct_create_node(void *value_ptr)](https://github.com/RikiTikkiTavi/ConsoleTrees#create-node-of-tree) )
 ```c
 typedef struct ct_node *ct_tree;
@@ -95,7 +95,7 @@ ct_tree ct_array_to_tree(int *arr, int arr_length);
 ```
 If you are working with for example with Heap Sort it might be useful to visualize your array as tree.
 
-Takes 2 arguments:
+Takes 2 arguments: <br/>
 ``` int *arr ``` - pointer on integer array <br/>
 ```  int arr_length ``` - length of array
 
@@ -108,7 +108,7 @@ ct_tree ct_create_node(void *value_ptr);
 ```
 Creates nodes (```ct_node```) for ```ct_tree ``` (pointer on ```ct_node```)
 
-Takes 1 argument:
+Takes 1 argument: <br/>
 ```void *value_ptr``` - pointer on node value;
 
 Returns:
@@ -120,7 +120,7 @@ void ct_delete_tree(ct_tree t);
 ```
 Deletes tree
 
-Takes 1 argument:
+Takes 1 argument: <br/>
 ```ct_tree t ``` - pointer on tree root
 
 #### Calculate tree height:
@@ -129,7 +129,7 @@ Takes 1 argument:
 ```
 Calculates height of tree
 
-Takes 1 argument:
+Takes 1 argument: <br/>
 ```ct_tree t ``` - pointer on tree root
 
 Returns:
@@ -141,7 +141,7 @@ ct_tree ct_create_rightist_tree(int *values, int values_q);
 ```
 Creates tree with only right nodes.
 
-Takes 2 arguments:
+Takes 2 arguments: <br/>
 ```int *values``` - integer array <br/>
 ```int values_q``` - array length
 
@@ -154,7 +154,7 @@ ct_tree ct_create_random_single_child_tree(int values[], int values_q);
 ```
 Creates random 1-regular tree.
 
-Takes 2 arguments:
+Takes 2 arguments: <br/>
 ```int values[]``` - integer array <br/>
 ```int values_q``` - array length
 
