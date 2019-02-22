@@ -53,9 +53,9 @@ void ct_visualize_tree(ct_tree t, int step_v0, char *val_to_string(void *val));
 ```
 
 Accepts 3 arguments:
-```ct_tree t``` - root of tree
-```int step_v0```  - initial margin between 2 vertices (recommend ```step_v0 = 5 ``` )
-```char *val_to_string(void *val)``` - pointer on function to convert value of tree node to string
+```ct_tree t``` - root of tree <br/>
+```int step_v0```  - initial margin between 2 vertices (recommend ```step_v0 = 5 ``` ) <br/>
+```char *val_to_string(void *val)``` - pointer on function to convert value of tree node to string <br/>
 
 So:
 1: You must convert your tree to following type, declared in /ConsoleTrees/src/lib/utils/types.h.
@@ -82,9 +82,9 @@ char *ct_int_to_string(void *val) {
   return str_buffer;
 }
 ```
-  Finally:
-  root - root of tree from 1.
-  ct_int_to_string - tree node value to string convertion function from 2.
+  Finally: <br/>
+  root - root of tree from 1. <br/>
+  ct_int_to_string - tree node value to string convertion function from 2. <br/>
  ```c
  ct_visualize_tree(root, 5, ct_int_to_string);
   ```
@@ -96,7 +96,7 @@ ct_tree ct_array_to_tree(int *arr, int arr_length);
 If you are working with for example with Heap Sort it might be useful to visualize your array as tree.
 
 Takes 2 arguments:
-``` int *arr ``` - pointer on integer array
+``` int *arr ``` - pointer on integer array <br/>
 ```  int arr_length ``` - length of array
 
 Returns:
@@ -142,7 +142,7 @@ ct_tree ct_create_rightist_tree(int *values, int values_q);
 Creates tree with only right nodes.
 
 Takes 2 arguments:
-```int *values``` - integer array
+```int *values``` - integer array <br/>
 ```int values_q``` - array length
 
 Returns:
@@ -155,7 +155,7 @@ ct_tree ct_create_random_single_child_tree(int values[], int values_q);
 Creates random 1-regular tree.
 
 Takes 2 arguments:
-```int values[]``` - integer array
+```int values[]``` - integer array <br/>
 ```int values_q``` - array length
 
 Returns
