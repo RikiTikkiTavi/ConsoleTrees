@@ -2,7 +2,13 @@
 
 Console trees is a C library for binary tree visualization in terminal, includes some methods for working
 with binary trees.
+![ConsoleTrees screenshot 1](https://github.com/RikiTikkiTavi/ConsoleTrees/blob/docs/docs/images/Screen1.png)
+![ConsoleTrees screenshot 1](https://github.com/RikiTikkiTavi/ConsoleTrees/blob/docs/docs/images/Screen2.png)
 
+## Table of contents:
+[Installation](https://github.com/RikiTikkiTavi/ConsoleTrees#installation)
+[Usage guide](https://github.com/RikiTikkiTavi/ConsoleTrees#usage--guide)
+[Types](https://github.com/RikiTikkiTavi/ConsoleTrees#types)
 
 
 ## Installation
@@ -53,7 +59,7 @@ Accepts 3 arguments:
 
 So:
 1: You must convert your tree to following type, declared in /ConsoleTrees/src/lib/utils/types.h.
-( For that purpose you can use ct_tree ct_create_node(void *value_ptr) )
+( For that purpose you can use [ct_tree ct_create_node(void *value_ptr)](https://github.com/RikiTikkiTavi/ConsoleTrees#create-node-of-tree) )
 ```c
 typedef struct ct_node *ct_tree;
 typedef struct ct_node {
@@ -152,6 +158,7 @@ Takes 2 arguments:
 ```int values[]``` - integer array
 ```int values_q``` - array length
 
+Returns
 ```ct_tree``` variable - pointer on tree root
 
 ## Types
