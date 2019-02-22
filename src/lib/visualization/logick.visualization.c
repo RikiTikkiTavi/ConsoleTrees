@@ -40,7 +40,7 @@ void ct_visualize_tree(ct_tree t, int step_v0, char *val_to_string(void *val)) {
 
 ct_layer_ptr _ct_init_layers(ct_tree t, char *val_to_string(void *val)) {
 
-    ct_layer_ptr layer_first = _ct_create_layer(ct_create_list_el(t, val_to_string), _ct_create_params(1, 1), NULL);
+    ct_layer_ptr layer_first = _ct_create_layer(_ct_create_list_el(t, val_to_string), _ct_create_params(1, 1), NULL);
 
     int h_max = ct_calc_tree_height(t);
     int layer_i = 1;
@@ -64,15 +64,15 @@ ct_layer_ptr _ct_init_layers(ct_tree t, char *val_to_string(void *val)) {
                 // Emulated ct_node
                 _ct_append_childs(
                         c_layer,
-                        ct_create_list_el(NULL, val_to_string),
-                        ct_create_list_el(NULL, val_to_string)
+                        _ct_create_list_el(NULL, val_to_string),
+                        _ct_create_list_el(NULL, val_to_string)
                 );
             } else {
                 // Real ct_node
                 _ct_append_childs(
                         c_layer,
-                        ct_create_list_el(vertex->t_node->left, val_to_string),
-                        ct_create_list_el(vertex->t_node->right, val_to_string)
+                        _ct_create_list_el(vertex->t_node->left, val_to_string),
+                        _ct_create_list_el(vertex->t_node->right, val_to_string)
                 );
             }
             vertex = vertex->next;
@@ -140,9 +140,9 @@ void _ct_init_vertices_params(ct_layer_ptr current_layer) {
         vertex->params->j = j;
 
         // Get left child
-        ct_list v_left = ct_get_list_element(current_layer->next->vertices, 2 * j);
+        ct_list v_left = _ct_get_list_element(current_layer->next->vertices, 2 * j);
         // Get right child
-        ct_list v_right = ct_get_list_element(current_layer->next->vertices, 2 * j + 1);
+        ct_list v_right = _ct_get_list_element(current_layer->next->vertices, 2 * j + 1);
 
         // If element is first element in layer
         if (j == 0) {
@@ -162,9 +162,9 @@ void _ct_init_vertices_params(ct_layer_ptr current_layer) {
             // Element is not first
 
             // Get right child of previous vertex
-            ct_list v_prev_right = ct_get_list_element(current_layer->next->vertices, 2 * j - 1);
+            ct_list v_prev_right = _ct_get_list_element(current_layer->next->vertices, 2 * j - 1);
             // Get previous vertex
-            ct_list v_prev = ct_get_list_element(current_layer->vertices, j - 1);
+            ct_list v_prev = _ct_get_list_element(current_layer->vertices, j - 1);
 
             // Calculate left margin of current vertex
             vertex->params->step_v_l = _ct_calc_v_step_v_l(v_left, v_right, v_prev_right, v_prev, vertex);
@@ -192,7 +192,7 @@ void _ct_init_n_u_vertices_params(ct_list first_vertex) {
     int j = 0;
     ct_list v_prev = NULL;
     while (vertex != NULL) {
-        if (ct_isEven(j)) {
+        if (_ct_isEven(j)) {
             vertex->params->n_u = _ct_calc_underlines_left(vertex, vertex->next);
         } else {
             vertex->params->n_u = _ct_calc_underlines_right(vertex, v_prev);

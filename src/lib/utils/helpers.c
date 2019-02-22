@@ -16,7 +16,7 @@ ct_tree ct_create_node(void *value_ptr) {
     return t;
 }
 
-ct_list ct_create_list_el(ct_tree t_node, char *val_to_string(void *val)) {
+ct_list _ct_create_list_el(ct_tree t_node, char *val_to_string(void *val)) {
     ct_list l = (ct_list) malloc(sizeof(ct_list_el));
     if (l == NULL) {
         printf("\nl: %d ::: Memory allocation for ct_list failed\n", __LINE__);
@@ -50,9 +50,9 @@ void ct_delete_tree(ct_tree t) {
     ct_delete_tree(right);
 }
 
-void ct_delete_list(ct_list l) {
+void _ct_delete_list(ct_list l) {
     if (l == NULL) {
-        printf("\nl: %d ::: Error in ct_delete_list(ct_list l) ::: ct_list l must not be NULL\n", __LINE__);
+        printf("\nl: %d ::: Error in _ct_delete_list(ct_list l) ::: ct_list l must not be NULL\n", __LINE__);
     }
     ct_list next;
 
@@ -125,14 +125,14 @@ void _log_vertex(ct_list vertex, ct_list v_left, ct_list v_right, ct_list v_prev
     printf("------\n");
 }
 
-int ct_isEven(int n) {
+int _ct_isEven(int n) {
     if (n % 2 == 0) {
         return 1;
     }
     return 0;
 }
 
-ct_list ct_get_list_element(ct_list l, int j) {
+ct_list _ct_get_list_element(ct_list l, int j) {
     int i = 0;
     while (l != NULL) {
         if (i == j) break;
@@ -148,7 +148,7 @@ void _ct_delete_layers_object(ct_layer_ptr layer_first) {
     while (layer_current != NULL) {
 
         // Delete vertices ct_list
-        ct_delete_list(layer_current->vertices);
+        _ct_delete_list(layer_current->vertices);
         layer_current->vertices = NULL;
 
         // Delete params

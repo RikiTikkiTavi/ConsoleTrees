@@ -15,7 +15,7 @@ ct_tree ct_create_node(void *value_ptr);
  * @param t_node
  * @return list pointer
  */
-ct_list ct_create_list_el(ct_tree t_node, char *val_to_string(void *val));
+ct_list _ct_create_list_el(ct_tree t_node, char *val_to_string(void *val));
 
 /**
  * @description Frees memory, where tree is allocated
@@ -27,7 +27,7 @@ void ct_delete_tree(ct_tree t);
  * @description Frees memory, where list is allocated
  * @param l
  */
-void ct_delete_list(ct_list l);
+void _ct_delete_list(ct_list l);
 
 void _ct_create_subtree(ct_tree t, int *arr, int i, int arr_length);
 
@@ -45,7 +45,7 @@ vertex_params *_ct_create_vertex_params(int v_s, int v_s_l, int v_s_r);
 
 void _log_vertex(ct_list vertex, ct_list v_left, ct_list v_right, ct_list v_prev_right, ct_list v_prev);
 
-int ct_isEven(int n);
+int _ct_isEven(int n);
 
 /**
  * @description Gets j element of linked list l
@@ -53,7 +53,7 @@ int ct_isEven(int n);
  * @param j
  * @return
  */
-ct_list ct_get_list_element(ct_list l, int j);
+ct_list _ct_get_list_element(ct_list l, int j);
 
 void _ct_append_childs(ct_layer_ptr c_layer, ct_list left, ct_list right);
 
