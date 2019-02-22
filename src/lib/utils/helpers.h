@@ -8,28 +8,28 @@
  * @param value - integer
  * @return tree pointer
  */
-tree create_node(int value);
+ct_tree ct_create_node(void *value_ptr);
 
 /**
  * @description Creates list element
  * @param t_node
  * @return list pointer
  */
-list create_list_el(tree t_node, char *val_to_string(void *val));
+ct_list ct_create_list_el(ct_tree t_node, char *val_to_string(void *val));
 
 /**
  * @description Frees memory, where tree is allocated
  * @param t - tree pointer
  */
-void delete_tree(tree t);
+void ct_delete_tree(ct_tree t);
 
 /**
  * @description Frees memory, where list is allocated
  * @param l
  */
-void delete_list(list l);
+void ct_delete_list(ct_list l);
 
-void _create_subtree(tree t, int *arr, int i, int arr_length);
+void _ct_create_subtree(ct_tree t, int *arr, int i, int arr_length);
 
 /**
  * @description Converts tree from array
@@ -37,25 +37,15 @@ void _create_subtree(tree t, int *arr, int i, int arr_length);
  * @param arr_length - length of array
  * @return pointer on tree root
  */
-tree array_to_tree(int arr[], int arr_length);
+ct_tree ct_array_to_tree(int *arr, int arr_length);
 
-void _add_nodes_to_array(tree t, int *arr, int k);
+int _ct_calc_vertex_size(void *val, char *val_to_string(void *val));
 
-/**
- * @description Converts tree to array
- * @param t - pointer on tree
- * @param arr_length - length of array
- * @return pointer on tree
- */
-int *tree_to_array(tree t, int *arr_length);
+vertex_params *_ct_create_vertex_params(int v_s, int v_s_l, int v_s_r);
 
-int _calc_vertex_size(void *val, char *val_to_string(void *val));
+void _log_vertex(ct_list vertex, ct_list v_left, ct_list v_right, ct_list v_prev_right, ct_list v_prev);
 
-vertex_params *_create_vertex_params(int v_s, int v_s_l, int v_s_r);
-
-void _log_vertex(list vertex, list v_left, list v_right, list v_prev_right, list v_prev);
-
-int isEven(int n);
+int ct_isEven(int n);
 
 /**
  * @description Gets j element of linked list l
@@ -63,16 +53,16 @@ int isEven(int n);
  * @param j
  * @return
  */
-list get_list_element(list l, int j);
+ct_list ct_get_list_element(ct_list l, int j);
 
-void _append_childs(layer_ptr c_layer, list left, list right);
+void _ct_append_childs(ct_layer_ptr c_layer, ct_list left, ct_list right);
 
-layer_params *_create_params(int n_vertex, int layer_i);
+ct_layer_params *_ct_create_params(int n_vertex, int layer_i);
 
-layer_ptr _create_layer(list vertices, layer_params *params, layer_ptr prev);
+ct_layer_ptr _ct_create_layer(ct_list vertices, ct_layer_params *params, ct_layer_ptr prev);
 
-void _delete_layers_object(layer_ptr layer_first);
+void _ct_delete_layers_object(ct_layer_ptr layer_first);
 
-char *int_to_string(void *n);
+char *ct_int_to_string(void *n);
 
 #endif //CONSOLETREES_HELPERS_H

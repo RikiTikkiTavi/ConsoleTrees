@@ -12,6 +12,10 @@
  * @param t Pointer on tree
  * @return integer tree height
  */
-int calc_tree_height(tree t);
+int ct_calc_tree_height(ct_tree t);
+
+ct_tree ct_create_rightist_tree(int values[], int values_q);
+
+ct_tree ct_create_random_single_child_tree(int values[], int values_q);
 
 #endif //CONSOLETREES_TREE_METHODS_H

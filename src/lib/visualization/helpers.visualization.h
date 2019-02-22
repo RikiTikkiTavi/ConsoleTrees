@@ -3,18 +3,18 @@
 
 #include "../utils/types.h"
 
-void _print_margin(int margin);
+void _ct_print_margin(int margin);
 
-void _print_underlines(int n);
+void _ct_print_underlines(int n);
 
-void _print_val(tree t_node, char *val_to_string(void *val));
+void _ct_print_val(ct_tree t_node, char *val_to_string(void *val));
 
-void _print_edge_y_row(list vertices);
+void _ct_print_edge_y_row(ct_list vertices);
 
-void _print_edge_x_row(list vertices);
+void _ct_print_edge_x_row(ct_list vertices);
 
-void _print_vertex_row(list vertices, char *val_to_string(void *val));
+void _ct_print_vertex_row(ct_list vertices, char *val_to_string(void *val));
 
-void _print_layer(layer_ptr layer, char *val_to_string(void *val));
+void _ct_print_layer(ct_layer_ptr layer, char *val_to_string(void *val));
 
 #endif //CONSOLETREES_VISUALISATION_HELPERS_H
